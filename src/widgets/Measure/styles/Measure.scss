@@ -1,0 +1,13 @@
+.measure-base {
+  padding: 0;
+}
+::part(radio-icon) {
+  margin: 0 0 5px 0;
+
+}
+
+::part(radio-label) {
+display: flex;
+flex-direction: column;
+font-size: 12px;
+}

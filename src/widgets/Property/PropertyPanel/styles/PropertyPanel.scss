@@ -1,0 +1,33 @@
+.propertypanel-base {
+ width: 100%;
+ height: 100%;
+ display: flex;
+ flex-direction: column;
+}
+
+
+calcite-panel::part(container) {
+  height: 100%;
+}
+.propertypanel-base calcite-tabs {
+  height: calc(100%);
+}
+
+
+
+.propertypanel-base calcite-tab {
+  height: 100%;
+  position: absolute;
+  top: 94px;
+  left: 0;
+  right: 0;
+  height: calc(100% - 142px);
+  overflow: auto;
+}
+.propertypanel-base  calcite-button {
+  margin-right: 1em;
+}
+
+#searchDiv {
+  min-width: 33px;
+}

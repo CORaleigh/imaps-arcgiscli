@@ -1,0 +1,53 @@
+.appshell-base {
+  padding: 0;
+}
+h3 {
+  margin: 5px 0 5px 0;
+}
+
+calcite-shell-panel[slot="contextual-panel"].maximized {
+  width:  100%;
+  position: absolute;
+  right: 0;
+  top:  0;
+  bottom: 0;
+  height: 100%;  
+
+}
+
+
+::part(content) {
+  width: 350px;
+
+}
+calcite-shell-panel[slot="contextual-panel"].maximized::part(content) {
+  width: 100%;
+  max-width: 100%;;
+}
+
+@media only screen and (max-height: 450px) {
+
+  .header {
+    display: none;
+  }
+}
+@media only screen and (max-width: 1000px) {
+
+  calcite-shell-panel[slot="primary-panel"]{
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  ::part(content) {
+    width: calc(100% - 48px);
+  
+  }
+  calcite-flow {
+    position: fixed;
+    right: 42px;
+    width: calc(100% - 42px);
+    height: calc(100% - 55px);
+    top: 52.84px;
+  }
+}
