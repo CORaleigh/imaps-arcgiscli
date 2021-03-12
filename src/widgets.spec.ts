@@ -24,7 +24,7 @@ describe('widgets', () => {
 				},
 			},
 		};
-		initWidgets(view, shell);
+		initWidgets(shell);
 		expect(widgets).toHaveLength(2);
 	});
 });
