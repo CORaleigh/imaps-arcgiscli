@@ -133,7 +133,6 @@ const scrollToService = (e: any) => {
 	});
 };
 const serviceChanged = (graphic: __esri.Graphic, view: __esri.MapView | __esri.SceneView, e: any) => {
-	;
 	if (
 		!e.detail.requestedAccordionItem.hasAttribute('active') &&
 		e.detail.requestedAccordionItem.childElementCount === 0
@@ -148,7 +147,7 @@ const serviceChanged = (graphic: __esri.Graphic, view: __esri.MapView | __esri.S
 			return service.group.title === e.detail.requestedAccordionItem.getAttribute('item-title');
 		});
 		const promises: Promise<__esri.FeatureSet>[] = [];
-
+		console.log(graphic);
 		if (serviceGroup) {
 			const layers = view.map.allLayers.filter((layer) => {
 				return serviceGroup.group.layers.includes(layer.title);
@@ -186,7 +185,6 @@ const serviceChanged = (graphic: __esri.Graphic, view: __esri.MapView | __esri.S
 	}
 };
 const deedCreator = (e: any) => {
-	;
 	return (e.graphic.layer as FeatureLayer)
 		.queryRelatedFeatures({
 			relationshipId: (e.graphic.layer as FeatureLayer).relationships.find((r) => {
@@ -327,11 +325,10 @@ export const createTemplate = (view: __esri.MapView | __esri.SceneView): PopupTe
 			new CustomContent({
 				outFields: ['*'],
 				creator: (e: any) => {
-					console.log(
-						(e.graphic.layer as FeatureLayer).relationships.find((r) => {
-							return r.name.includes('PROPERTY');
-						})?.relatedTableId,
-					);
+					(e.graphic.layer as FeatureLayer).relationships.find((r) => {
+						return r.name.includes('PROPERTY');
+					})?.relatedTableId;
+
 					return propertyLayer
 						?.queryFeatures({
 							where: `REID = '${e.graphic.getAttribute('REID')}'`,

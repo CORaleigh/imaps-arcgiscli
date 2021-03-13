@@ -47,6 +47,10 @@ export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void
 		});
 		view.on('hold', (event) => {
 			propertyPanel.geometry = event.mapPoint;
+			const action = document.querySelector('.panel:last-child calcite-action-bar calcite-action');
+			if (!action?.classList.contains('active')) {
+				action?.dispatchEvent(new MouseEvent('click'));
+			}
 		});
 	});
 	document.addEventListener('visibilitychange', function () {
@@ -101,6 +105,10 @@ export function initWidgets(shell: AppShell): void {
 	let activetool = '';
 	select.on('selection-complete', (graphic: __esri.Graphic) => {
 		propertyPanel.geometry = graphic.geometry;
+		const action = document.querySelector('.panel:last-child calcite-action-bar calcite-action');
+		if (!action?.classList.contains('active')) {
+			action?.dispatchEvent(new MouseEvent('click'));
+		}
 	});
 	select.on('activated', () => {
 		if (activetool === 'measure') {

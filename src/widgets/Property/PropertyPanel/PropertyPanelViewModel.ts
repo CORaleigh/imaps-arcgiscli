@@ -35,7 +35,7 @@ export default class PropertySearchViewModel extends Accessor {
 					this.view.goTo({ target: featureSet.features });
 
 					const oids: number[] = featureSet.features.map((feature) => {
-						return feature.getObjectId();
+						return feature.getAttribute('OBJECTID');
 					});
 					this.propertyLayer
 						.queryRelatedFeatures({
@@ -56,6 +56,7 @@ export default class PropertySearchViewModel extends Accessor {
 							this.propertyList.definitionExpression = `OBJECTID in (${reloids.toString()})`;
 							if (features.length === 1) {
 								features[0].layer = this.condoTable;
+								features[0].geometry = featureSet.features[0].geometry;
 								this.selectFeature(features[0]);
 							}
 							this.highlights?.remove();
@@ -66,6 +67,7 @@ export default class PropertySearchViewModel extends Accessor {
 	};
 
 	selectFeature = (feature: __esri.Graphic): void => {
+		console.log(feature);
 		feature.layer = this.condoTable;
 		this.featureWidget.propertyFeature = feature;
 		document.querySelector(`calcite-tab-title[name="details"]`)?.removeAttribute('disabled');

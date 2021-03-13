@@ -149,33 +149,39 @@ export default class PropertySearchViewModel extends Widget {
 				if (features.length === 1) {
 					const feature = features[0];
 					feature.geometry = properties[0].geometry;
+					console.log(feature.geometry);
 					this.emit('feature-selected', feature);
 				}
 			});
 		});
 	};
-	searchCondos = (where: string): void => {
+	searchCondos = (where: string, oids: number[]): void => {
+		console.log(where, oids);
 		const params: any = { outFields: ['*'] };
 		if (where != '') {
 			params.where = where;
+		} else {
+			params.objectIds = oids;
 		}
 		this.condoTable.queryFeatures(params).then((result) => {
 			const oids: number[] = [];
 			result.features.forEach((feature: esri.Graphic) => {
 				oids.push(feature.getAttribute('OBJECTID'));
 			});
-			this.getProperty(oids);
-
-			if (result.features.length > 1) {
-				this.emit('features-selected', result.features);
-			}
-			if (result.features.length === 1) {
-				this.emit('feature-selected', result.features[0]);
-			}
+			this.getProperty(oids).then((properties: esri.Graphic[]) => {
+				if (result.features.length > 1) {
+					this.emit('features-selected', result.features);
+				}
+				if (result.features.length === 1) {
+					const feature = result.features[0];
+					feature.geometry = properties[0].geometry;
+					console.log(feature.geometry);
+					this.emit('feature-selected', feature);
+				}
+			});
 		});
 	};
 	searchResultSelected = (layer: FeatureLayer, source: string, results: any, term: string) => {
-		console.log(layer);
 		if (!layer && source === 'Owner') {
 			layer = this.condoTable;
 		}
@@ -184,7 +190,7 @@ export default class PropertySearchViewModel extends Widget {
 		}
 		const oids: number[] = [];
 		results.forEach((r: any) => {
-			oids.push(r.feature.getObjectId());
+			oids.push(r.feature.getAttribute('OBJECTID'));
 		});
 		let where = '';
 		console.log(layer);
@@ -193,14 +199,14 @@ export default class PropertySearchViewModel extends Widget {
 			where = `${source === 'Street Name' ? 'FULL_STREET_NAME' : 'SITE_ADDRESS'} = '${term}'`;
 			this.searchRelatedCondos(oids);
 		} else {
-			this.searchCondos(where);
+			this.searchCondos(where, oids);
 		}
 	};
 	wildcardSearch = (where: string, condoTable: FeatureLayer) => {
 		const oids: number[] = [];
 		condoTable.queryFeatures({ where: where, outFields: ['*'] }).then((result) => {
 			result.features.forEach((f) => {
-				oids.push(f.getObjectId());
+				oids.push(f.getAttribute('OBJECTID'));
 			});
 			this.getProperty(oids);
 			if (result.features.length > 1) {

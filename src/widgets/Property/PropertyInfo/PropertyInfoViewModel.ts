@@ -8,7 +8,6 @@ import { property, subclass } from '@arcgis/core/core/accessorSupport/decorators
 import { whenDefinedOnce, watch } from '@arcgis/core/core/watchUtils';
 import * as promiseUtils from '@arcgis/core/core/promiseUtils';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import { createTemplate } from '../../../data/PropertyInfoTemplate';
 
 @subclass('app.widgets.PropertyInfo.PropertyInfoViewModel')
 export default class PropertyInfoViewModel extends Accessor {
@@ -25,6 +24,12 @@ export default class PropertyInfoViewModel extends Accessor {
 			const relationship = (feature.layer as FeatureLayer)?.relationships.find((r) => {
 				return r.name === 'CONDO_PHOTOS';
 			});
+			const media = ((feature.layer as FeatureLayer).popupTemplate.content as esri.Content[]).find(
+				(content: esri.Content) => {
+					return content?.type === 'media';
+				},
+			);
+			(media as esri.MediaContent).mediaInfos = [];
 			const mediaInfos: any[] = [];
 			const layer: FeatureLayer = feature.layer as FeatureLayer;
 			layer
@@ -48,10 +53,9 @@ export default class PropertyInfoViewModel extends Accessor {
 							});
 						});
 					}
-					const media = (feature.popupTemplate.content as esri.Content[]).find((content: esri.Content) => {
-						return content?.type === 'media';
-					});
+
 					(media as esri.MediaContent).mediaInfos = mediaInfos;
+					console.log(mediaInfos);
 					resolve();
 				});
 		});
@@ -63,11 +67,13 @@ export default class PropertyInfoViewModel extends Accessor {
 		}
 
 		this.featureWidget.graphic = this.propertyFeature;
-		console.log(this.propertyFeature);
-		(this.featureWidget.graphic.layer as FeatureLayer).popupTemplate = createTemplate(this.view);
-		this.featureWidget.graphic.popupTemplate = (this.featureWidget.graphic.layer as FeatureLayer).popupTemplate;
+
 		this.getPhotos(this.featureWidget.graphic).then(() => {
-			document.querySelector('.esri-feature')?.parentElement?.scrollTo({ top: 0, behavior: 'smooth' });
+			this.featureWidget.graphic.popupTemplate = (this.featureWidget.graphic.layer as FeatureLayer).popupTemplate;
+			this.featureWidget.renderNow();
+			setTimeout(() => {
+				document.querySelector('.esri-feature')?.parentElement?.scrollTo({ top: 0, behavior: 'smooth' });
+			});
 		});
 	};
 

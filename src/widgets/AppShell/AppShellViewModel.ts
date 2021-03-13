@@ -96,9 +96,9 @@ export default class AppShellViewModel extends Widget {
 			});
 			observer.disconnect();
 		});
-		requestAnimationFrame(() => {
+		setTimeout(() => {
 			observer.observe(element.shadowRoot as Node, { childList: true });
-		});
+		}, 500);
 	};
 
 	actionPanelCreated = (element: Element) => {
@@ -113,11 +113,11 @@ export default class AppShellViewModel extends Widget {
 			});
 			observer.disconnect();
 		});
-		requestAnimationFrame(() => {
+		setTimeout(() => {
 			observer.observe(element?.shadowRoot as Node, { childList: true });
 
 			this.resize();
-		});
+		}, 500);
 	};
 
 	init(view: esri.MapView | esri.SceneView) {

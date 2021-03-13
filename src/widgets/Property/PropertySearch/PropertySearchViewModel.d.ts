@@ -17,7 +17,7 @@ export default class PropertySearchViewModel extends Widget {
     getLayerSource: (placeholder: string, name: string, table: FeatureLayer, outFields: string[], orderByFields: string[], searchFields: string[], startsWith: boolean, resultFields: string[]) => esri.LayerSearchSource;
     getProperty: (oids: number[]) => Promise<esri.Graphic[]>;
     searchRelatedCondos: (oids: number[]) => void;
-    searchCondos: (where: string) => void;
+    searchCondos: (where: string, oids: number[]) => void;
     searchResultSelected: (layer: FeatureLayer, source: string, results: any, term: string) => void;
     wildcardSearch: (where: string, condoTable: FeatureLayer) => void;
     getWildcardSearchWhere: (searchFields: string[], term: string) => string;
