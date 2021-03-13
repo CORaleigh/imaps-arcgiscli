@@ -46,7 +46,18 @@ export default class AppShellViewModel extends Widget {
 			.forEach((panel) => {
 				panel.setAttribute('dismissed', '');
 			});
-		document.getElementById(action.container)?.closest('calcite-panel')?.removeAttribute('dismissed');
+		if ((event.target as HTMLElement).classList.contains('active')) {
+			(event.target as HTMLElement).classList.remove('active');
+
+			document.getElementById(action.container)?.closest('calcite-panel')?.setAttribute('dismissed', '');
+		} else {
+			action.widget.container
+				.closest('.panel')
+				?.querySelector(`calcite-action.active`)
+				?.classList.remove('active');
+			(event.target as HTMLElement).classList.add('active');
+			document.getElementById(action.container)?.closest('calcite-panel')?.removeAttribute('dismissed');
+		}
 
 		// setTimeout(() => {
 		// 	action.widget.container
@@ -116,8 +127,7 @@ export default class AppShellViewModel extends Widget {
 		this.emit('ui-loaded', null);
 		setTimeout(() => {
 			document
-				.querySelector('calcite-shell-panel[position="end"]')
-				?.querySelector('calcite-action')
+				.querySelector('.panel:last-child calcite-action-bar calcite-action')
 				?.dispatchEvent(new MouseEvent('click'));
 		});
 	}

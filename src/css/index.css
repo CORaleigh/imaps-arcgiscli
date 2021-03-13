@@ -49,7 +49,7 @@ input, select { font-size: 16px !important;}
 }
 
 .esri-search {
-  width: 100%;
+  width: 100% !important;
   border-bottom-color: rgb(234, 234, 234);
   border-bottom-style: solid;
   border-bottom-width: 1px;  
@@ -87,6 +87,31 @@ calcite-panel::part(container):focus {
 
 calcite-action.active::part(actionicon) {
   color:var(--blue);;
+}
+
+.dark ::part(content) {
+  background-color: #353535;
+  color: white;
+}
+
+
+.dark ::part(cell) {
+  background-color: #353535;
+  border-color: rgba(173, 173, 173, 0.3);
+  color: rgb(209, 209, 209);
+}
+
+.dark ::part(checkbox) {
+  background-color: rgb(209, 209, 209);
+}
+
+.dark ::part(indicators)::before {
+  opacity: .8;
+}
+
+
+.dark .esri-grid__grid {
+  background-color: rgb(36, 36, 36);
 }
 
 @media only screen and (max-width: 500px) {

@@ -20,6 +20,6 @@ export default class AppShell extends Widget {
     shellPanelCreated: (elm: Element) => void;
     maximizedClicked: (event: Event) => void;
     panelCreated: (elm: Element) => void;
-    shellCreated: () => void;
+    headerCreated: () => void;
     render(): tsx.JSX.Element;
 }

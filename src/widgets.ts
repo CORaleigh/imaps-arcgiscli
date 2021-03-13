@@ -15,11 +15,13 @@ import { Tip } from './widgets/Tip';
 import LocationSearch from './widgets/LocationSearch';
 import { Action } from './widgets/Action';
 import MapView from '@arcgis/core/views/MapView';
+import WebMap from '@arcgis/core/WebMap';
 
 export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void {
 	let propertyPanel: PropertyPanel;
 	const view: MapView = new MapView({ map: map, container: 'viewDiv' });
 	view.when((view: MapView) => {
+		checkLocalStorage(view);
 		const propertyLayer = view.map.allLayers.find((layer) => {
 			return layer.title.includes('Property') && layer.type === 'feature';
 		}) as FeatureLayer;
@@ -46,6 +48,25 @@ export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void
 		view.on('hold', (event) => {
 			propertyPanel.geometry = event.mapPoint;
 		});
+	});
+	document.addEventListener('visibilitychange', function () {
+		// fires when user switches tabs, apps, goes to homescreen, etc.
+		if (document.visibilityState == 'hidden') {
+			view.map.removeMany(
+				view.map.allLayers
+					.filter((layer) => {
+						return layer.type === 'group' && !(layer as __esri.GroupLayer).layers.length;
+					})
+					.toArray(),
+			);
+			const json = (view.map as any).toJSON();
+			json.initialState.viewpoint.targetGeometry = view.extent;
+			window.localStorage.setItem('imaps', JSON.stringify(json));
+		}
+
+		// fires when app transitions from prerender, user returns to the app / tab.
+		if (document.visibilityState == 'visible') {
+		}
 	});
 }
 
@@ -113,4 +134,21 @@ export function initWidgets(shell: AppShell): void {
 		new Action('Print', print, 'print', 'printDiv', true, []),
 	];
 	//return view;
+}
+
+function checkLocalStorage(view: MapView): void {
+	if (window.localStorage.getItem('imaps')) {
+		const webmap: WebMap = WebMap.fromJSON(JSON.parse(window.localStorage.getItem('imaps') as string));
+		webmap.load().then(() => {
+			view.map.allLayers.forEach((layer) => {
+				const lyr = webmap.allLayers.find((l) => {
+					return layer.id === l.id;
+				});
+				layer.visible = lyr?.visible;
+				layer.opacity = lyr?.opacity;
+			});
+			view.map.basemap = webmap.basemap;
+			view.extent = webmap.initialViewProperties.viewpoint.targetGeometry.extent;
+		});
+	}
 }

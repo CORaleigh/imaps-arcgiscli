@@ -8,6 +8,7 @@ import Widget from '@arcgis/core/widgets/Widget';
 import AppShellViewModel from './AppShell/AppShellViewModel';
 import { Action } from './Action';
 import './AppShell/styles/AppShell.scss';
+import HeaderMenu from './HeaderMenu';
 export interface AppShellProperties extends esri.WidgetProperties {
 	name?: string;
 	view?: esri.MapView | esri.SceneView;
@@ -87,7 +88,10 @@ export default class AppShell extends Widget {
 		observer.observe(elm as Node, { attributes: true });
 	};
 
-	shellCreated = (): void => {};
+	headerCreated = (): void => {
+		new HeaderMenu({ view: this.view, container: 'header' });
+	};
+
 	render(): tsx.JSX.Element {
 		window.onresize = () => {
 			if (window.innerWidth >= 1000) {
@@ -120,9 +124,7 @@ export default class AppShell extends Widget {
 
 		return (
 			<div class={CSS.base}>
-				<header slot="shell-header" class="heading header" afterCreate={this.shellCreated}>
-					<h2>iMAPS</h2>
-				</header>
+				<div id="header" afterCreate={this.headerCreated}></div>
 				<div id="container">
 					<div id="leftPanel" class="panel">
 						<calcite-action-bar theme="light" slot="action-bar">
