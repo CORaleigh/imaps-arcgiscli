@@ -1,8 +1,9 @@
 import esri = __esri;
-import Accessor from '@arcgis/core/core/Accessor';
 import Measurement from '@arcgis/core/widgets/Measurement';
-export default class MeasureViewModel extends Accessor {
+import Widget from '@arcgis/core/widgets/Widget';
+export default class MeasureViewModel extends Widget {
     view: esri.MapView | esri.SceneView;
+    state: string;
     measurement: Measurement;
     constructor(params?: any);
     measureCreated: () => void;

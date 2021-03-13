@@ -38,26 +38,33 @@ export default class AppShellViewModel extends Widget {
 				return action.container === (event.currentTarget as any).value;
 			}) as Action;
 		}
-
 		action.widget.container = action.container;
+		document
+			.getElementById(action.container)
+			?.closest('.panel')
+			?.querySelectorAll('calcite-panel')
+			.forEach((panel) => {
+				panel.setAttribute('dismissed', '');
+			});
+		document.getElementById(action.container)?.closest('calcite-panel')?.removeAttribute('dismissed');
 
-		setTimeout(() => {
-			action.widget.container
-				.closest('calcite-shell-panel')
-				.querySelector('calcite-flow:not([hidden=""])')
-				?.setAttribute('hidden', '');
+		// setTimeout(() => {
+		// 	action.widget.container
+		// 		.closest('calcite-shell-panel')
+		// 		.querySelector('calcite-flow:not([hidden=""])')
+		// 		?.setAttribute('hidden', '');
 
-			action.widget.container.closest('calcite-flow')?.removeAttribute('hidden');
+		// 	action.widget.container.closest('calcite-flow')?.removeAttribute('hidden');
 
-			action.widget.container.closest('calcite-panel')?.removeAttribute('dismissed');
-			action.widget.container
-				.closest('calcite-shell-panel')
-				?.querySelector(`calcite-action.active`)
-				?.classList.remove('active');
-			(event.target as HTMLElement).classList.add('active');
+		// 	action.widget.container.closest('calcite-panel')?.removeAttribute('dismissed');
+		// 	action.widget.container
+		// 		.closest('calcite-shell-panel')
+		// 		?.querySelector(`calcite-action.active`)
+		// 		?.classList.remove('active');
+		// 	(event.target as HTMLElement).classList.add('active');
 
-			action.widget.container.closest('calcite-shell-panel')?.removeAttribute('collapsed');
-		});
+		// 	action.widget.container.closest('calcite-shell-panel')?.removeAttribute('collapsed');
+		// });
 		// this.selectedAction.widget.container.closest('calcite-flow').setAttribute('hidden', '');
 		// this.selectedAction = action;
 		// this.selectedAction.widget.container = this.selectedAction.container;
@@ -100,64 +107,47 @@ export default class AppShellViewModel extends Widget {
 
 			this.resize();
 		});
-		//action.widget.container = action.container;
 	};
 
 	init(view: esri.MapView | esri.SceneView) {
 		view.container = document.querySelector('#viewDiv') as HTMLDivElement;
 	}
 	rightActionsInit() {
-		// const action: Action = actions[0];
 		this.emit('ui-loaded', null);
 		setTimeout(() => {
 			document
 				.querySelector('calcite-shell-panel[position="end"]')
 				?.querySelector('calcite-action')
 				?.dispatchEvent(new MouseEvent('click'));
-			// 	action.widget.container = action.container;
-			// 	action.widget.container.closest('calcite-flow').removeAttribute('hidden');
-			// 	action.widget.container.closest('calcite-panel').removeAttribute('dismissed');
 		});
 	}
 
 	resize = () => {
 		if (window.innerWidth >= 1000) {
-			const actionbar = document
-				?.querySelector('calcite-shell-panel[position="start"]')
-				?.querySelector('calcite-action-bar');
+			const actionbar = document?.querySelector('calcite-action-bar:first-child');
 			document
-				?.querySelector('calcite-shell-panel[position="end"]')
+				?.querySelector('calcite-action-bar:last-child')
 				?.querySelectorAll('.tool-action')
 				?.forEach((action) => {
 					actionbar?.append(action);
 				});
-			const panel = document?.querySelector('calcite-shell-panel[position="start"]');
-			document
-				?.querySelector('calcite-shell-panel[position="end"]')
-				?.querySelectorAll('.tool-container')
-				?.forEach((container) => {
-					panel?.append(container);
-				});
+			const panel = document?.querySelector('.panel:first-child');
+			document?.querySelectorAll('calcite-panel.tool-container')?.forEach((container) => {
+				panel?.append(container);
+			});
 		} else {
-			const actionbar = document
-				?.querySelector('calcite-shell-panel[position="end"]')
-				?.querySelector('calcite-action-bar');
+			const actionbar = document?.querySelector('calcite-action-bar:last-child');
 			document
-				?.querySelector('calcite-shell-panel[position="start"]')
+				?.querySelector('calcite-action-bar:first-child')
 				?.querySelectorAll('.tool-action')
 				?.forEach((action) => {
 					actionbar?.append(action);
 					action.addEventListener('click', this.actionClicked);
 				});
-			const flow = document
-				?.querySelector('calcite-shell-panel[position="end"]')
-				?.querySelector('calcite-flow:last-child');
-			document
-				?.querySelector('calcite-shell-panel[position="start"]')
-				?.querySelectorAll('.tool-container')
-				?.forEach((container) => {
-					flow?.parentElement?.append(container);
-				});
+			const panel = document?.querySelector('.panel:last-child');
+			document?.querySelectorAll('calcite-panel.tool-container')?.forEach((container) => {
+				panel?.insertBefore(container, panel.querySelector('calcite-action-bar'));
+			});
 		}
 	};
 }

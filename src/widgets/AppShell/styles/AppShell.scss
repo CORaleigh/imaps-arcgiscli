@@ -1,53 +1,101 @@
 .appshell-base {
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
-h3 {
-  margin: 5px 0 5px 0;
-}
-
-calcite-shell-panel[slot="contextual-panel"].maximized {
-  width:  100%;
-  position: absolute;
-  right: 0;
-  top:  0;
-  bottom: 0;
-  height: 100%;  
-
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
 }
 
+.panel {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  background-color: black;
+}
+
+calcite-panel:not([dismissed]) {
+  min-width: 350px;
+}
+calcite-panel[dismissed] {
+  min-width: 0;
+  display: none;
+}
+ 
+calcite-action-bar {
+  // position: fixed;
+  height: 100%;
+}
+// calcite-action-bar:first-child {
+//   left: 0;
+// }
+// calcite-action-bar:last-child {
+//   right: 0;
+// }
+
+#viewDiv {
+  width:100%;
+  height:100%;
+  background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
+    linear-gradient(-45deg, #ccc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ccc 75%),
+    linear-gradient(-45deg, transparent 75%, #ccc 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
 
 ::part(content) {
   width: 350px;
 
 }
-calcite-shell-panel[slot="contextual-panel"].maximized::part(content) {
+calcite-panel.maximized::part(content) {
   width: 100%;
-  max-width: 100%;;
+  max-width: 100%;
 }
+calcite-panel.maximized{
+  position: absolute;
+  width: calc(100% - 48px);
+  right: 48px;
+
+}
+
+calcite-action-bar {
+  overflow-x: hidden;
+}
+
+@media only screen and (max-width: 1000px) {
+  calcite-action-bar:first-child {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  
+  calcite-panel:not([dismissed]) {
+    position: relative;
+    right: 48px;
+  }
+  calcite-action-bar:last-child {
+    position:fixed;
+    right:0;
+  }
+  calcite-action.maximized {
+    display: none;;
+  }
+}
+
+h3 {
+  margin: 5px 0 5px 0;
+}
+
+
 
 @media only screen and (max-height: 450px) {
 
   .header {
     display: none;
-  }
-}
-@media only screen and (max-width: 1000px) {
-
-  calcite-shell-panel[slot="primary-panel"]{
-    display: none !important;
-  }
-}
-
-@media only screen and (max-width: 500px) {
-  ::part(content) {
-    width: calc(100% - 48px);
-  
-  }
-  calcite-flow {
-    position: fixed;
-    right: 42px;
-    width: calc(100% - 42px);
-    height: calc(100% - 55px);
-    top: 52.84px;
   }
 }

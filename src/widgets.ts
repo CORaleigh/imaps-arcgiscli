@@ -15,6 +15,7 @@ import { Tip } from './widgets/Tip';
 import LocationSearch from './widgets/LocationSearch';
 import { Action } from './widgets/Action';
 import MapView from '@arcgis/core/views/MapView';
+
 export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void {
 	let propertyPanel: PropertyPanel;
 	const view: MapView = new MapView({ map: map, container: 'viewDiv' });
@@ -76,10 +77,19 @@ export function initWidgets(shell: AppShell): void {
 	// 	addressTable,
 	// });
 	const propertyPanel = new PropertyPanel({});
+	let activetool = '';
 	select.on('selection-complete', (graphic: __esri.Graphic) => {
 		propertyPanel.geometry = graphic.geometry;
 	});
-
+	select.on('activated', () => {
+		if (activetool === 'measure') {
+			measure.state = 'inactive';
+		}
+		activetool = 'select';
+	});
+	measure.on('activated', () => {
+		activetool = 'measure';
+	});
 	shell.rightActions = [
 		new Action('Property Search', propertyPanel, 'search', 'propertySearchDiv', false, [
 			new Tip(

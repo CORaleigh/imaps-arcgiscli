@@ -3,7 +3,7 @@ import esri = __esri;
 
 import { aliasOf, property, subclass } from '@arcgis/core/core/accessorSupport/decorators';
 
-import { renderable, tsx } from '@arcgis/core/widgets/support/widget';
+import { renderable, tsx, vmEvent } from '@arcgis/core/widgets/support/widget';
 
 import Widget from '@arcgis/core/widgets/Widget';
 
@@ -12,6 +12,7 @@ import './Measure/styles/Measure.scss';
 export interface MeasureProperties extends esri.WidgetProperties {
 	name?: string;
 	view?: esri.MapView | esri.SceneView;
+	state?: string;
 }
 
 const CSS = {
@@ -22,11 +23,10 @@ const CSS = {
 export default class Measure extends Widget {
 	@aliasOf('viewModel.view')
 	view!: esri.MapView | esri.SceneView;
+	@aliasOf('viewModel.state')
+	state!: string;
 
-	@aliasOf('viewModel.name')
-	@renderable()
-	name = '';
-
+	@vmEvent(['activated'])
 	@property({
 		type: MeasureViewModel,
 	})

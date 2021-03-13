@@ -133,7 +133,7 @@ const scrollToService = (e: any) => {
 	});
 };
 const serviceChanged = (graphic: __esri.Graphic, view: __esri.MapView | __esri.SceneView, e: any) => {
-	debugger;
+	;
 	if (
 		!e.detail.requestedAccordionItem.hasAttribute('active') &&
 		e.detail.requestedAccordionItem.childElementCount === 0
@@ -186,7 +186,7 @@ const serviceChanged = (graphic: __esri.Graphic, view: __esri.MapView | __esri.S
 	}
 };
 const deedCreator = (e: any) => {
-	debugger;
+	;
 	return (e.graphic.layer as FeatureLayer)
 		.queryRelatedFeatures({
 			relationshipId: (e.graphic.layer as FeatureLayer).relationships.find((r) => {

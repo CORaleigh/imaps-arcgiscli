@@ -66,6 +66,9 @@ export default class PropertySelectViewModel extends Widget {
 				mode: 'hybrid',
 			},
 		});
+		sketch.watch('activeTool', (activeTool: string) => {
+			this.emit('activated', activeTool);
+		});
 		sketch.on('create' as any, (event: any) => {
 			this.sketchComplete(event, sketchGraphics);
 		});

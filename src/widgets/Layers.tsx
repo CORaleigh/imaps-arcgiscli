@@ -9,7 +9,7 @@ import Widget from '@arcgis/core/widgets/Widget';
 
 import LayersViewModel from './Layers/LayersViewModel';
 import LayerList from '@arcgis/core/widgets/LayerList';
-
+import './Layers/styles/Layers.scss';
 export interface LayersProperties extends esri.WidgetProperties {
 	name?: string;
 	view?: esri.MapView | esri.SceneView;
@@ -23,10 +23,6 @@ const CSS = {
 export default class Layers extends Widget {
 	@aliasOf('viewModel.view')
 	view!: esri.MapView | esri.SceneView;
-
-	@aliasOf('viewModel.name')
-	@renderable()
-	name = '';
 
 	@aliasOf('viewModel.layerList')
 	layerList!: LayerList;

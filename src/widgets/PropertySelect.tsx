@@ -29,7 +29,7 @@ export default class PropertySelect extends Widget {
 	@property({
 		type: PropertySelectViewModel,
 	})
-	@vmEvent(['selection-complete'])
+	@vmEvent(['selection-complete', 'activated'])
 	@renderable()
 	viewModel: PropertySelectViewModel = new PropertySelectViewModel();
 
