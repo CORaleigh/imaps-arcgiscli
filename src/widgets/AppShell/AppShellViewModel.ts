@@ -46,6 +46,7 @@ export default class AppShellViewModel extends Widget {
 			.forEach((panel) => {
 				panel.setAttribute('dismissed', '');
 			});
+
 		if ((event.target as HTMLElement).classList.contains('active')) {
 			(event.target as HTMLElement).classList.remove('active');
 
@@ -56,49 +57,23 @@ export default class AppShellViewModel extends Widget {
 				?.querySelector(`calcite-action.active`)
 				?.classList.remove('active');
 			(event.target as HTMLElement).classList.add('active');
+
 			document.getElementById(action.container)?.closest('calcite-panel')?.removeAttribute('dismissed');
 		}
-
-		// setTimeout(() => {
-		// 	action.widget.container
-		// 		.closest('calcite-shell-panel')
-		// 		.querySelector('calcite-flow:not([hidden=""])')
-		// 		?.setAttribute('hidden', '');
-
-		// 	action.widget.container.closest('calcite-flow')?.removeAttribute('hidden');
-
-		// 	action.widget.container.closest('calcite-panel')?.removeAttribute('dismissed');
-		// 	action.widget.container
-		// 		.closest('calcite-shell-panel')
-		// 		?.querySelector(`calcite-action.active`)
-		// 		?.classList.remove('active');
-		// 	(event.target as HTMLElement).classList.add('active');
-
-		// 	action.widget.container.closest('calcite-shell-panel')?.removeAttribute('collapsed');
-		// });
-		// this.selectedAction.widget.container.closest('calcite-flow').setAttribute('hidden', '');
-		// this.selectedAction = action;
-		// this.selectedAction.widget.container = this.selectedAction.container;
-		// this.selectedAction.widget.container.closest('calcite-flow').removeAttribute('hidden');
-		// this.selectedAction.widget.container.closest('calcite-panel').removeAttribute('dismissed');
-
-		// (event.currentTarget as HTMLElement).closest('calcite-shell-panel')?.removeAttribute('collapsed');
-
-		// (event.currentTarget as HTMLElement).parentElement?.parentElement
-		// 	?.querySelector('calcite-panel')
-		// 	?.removeAttribute('dismissed');
 	};
 
 	actionCreated = (element: Element): void => {
 		const observer: MutationObserver = new MutationObserver((mutations) => {
 			mutations.forEach((mutation) => {
-				(mutation.addedNodes[0] as HTMLElement)?.setAttribute('part', 'actionicon');
+				(mutation.addedNodes[0] as HTMLElement)
+					?.querySelector('calcite-icon')
+					?.setAttribute('part', 'actionicon');
 			});
 			observer.disconnect();
 		});
 		setTimeout(() => {
 			observer.observe(element.shadowRoot as Node, { childList: true });
-		}, 500);
+		}, 1000);
 	};
 
 	actionPanelCreated = (element: Element) => {
@@ -117,7 +92,7 @@ export default class AppShellViewModel extends Widget {
 			observer.observe(element?.shadowRoot as Node, { childList: true });
 
 			this.resize();
-		}, 500);
+		}, 1000);
 	};
 
 	init(view: esri.MapView | esri.SceneView) {
@@ -126,10 +101,11 @@ export default class AppShellViewModel extends Widget {
 	rightActionsInit() {
 		this.emit('ui-loaded', null);
 		setTimeout(() => {
+			//
 			document
 				.querySelector('.panel:last-child calcite-action-bar calcite-action')
 				?.dispatchEvent(new MouseEvent('click'));
-		});
+		}, 1000);
 	}
 
 	resize = () => {

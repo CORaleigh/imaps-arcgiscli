@@ -79,19 +79,39 @@ calcite-action-bar {
 
 @media only screen and (max-width: 500px) {
   
+  calcite-action.maximize {
+    display: none !important;
+  }
   calcite-panel:not([dismissed]) {
-    position: relative;
+    position: fixed;
+    left: 0;
     right: 48px;
-  }
-  calcite-action-bar:last-child {
-    position:fixed;
-    right:0;
-  }
-  calcite-action.maximized {
-    display: none;;
-  }
+    bottom: 0;
+    top: 52.84px;
+    z-index: 100;
+    width: auto;
+    min-width: auto;
+
+}
+calcite-action-bar:last-child {
+  z-index: 100;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    top: 52.84px;
 }
 
+
+#viewDiv {
+  position: fixed;
+  left: 0;
+  right: 48px;
+  bottom: 0;
+  top: 52.84px;
+  width: auto;
+z-index: 99;
+}
+}
 h3 {
   margin: 5px 0 5px 0;
 }

@@ -66,7 +66,8 @@ export default class AppShell extends Widget {
 		document.querySelector('calcite-tab:not([active])')?.classList.add('esri-hidden');
 		document.querySelector('calcite-tab:not([active])')?.toggleAttribute('disabled');
 
-		document.querySelector('calcite-tab-title:not([active])')?.dispatchEvent(new MouseEvent('click'));
+		//document.querySelector('calcite-tab-title:not([active])')?.dispatchEvent(new MouseEvent('click'));
+
 		requestAnimationFrame(() => {
 			document.querySelector('calcite-tab:not([active])')?.toggleAttribute('disabled');
 

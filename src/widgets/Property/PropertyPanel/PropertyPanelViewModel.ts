@@ -72,6 +72,7 @@ export default class PropertySearchViewModel extends Accessor {
 		this.featureWidget.propertyFeature = feature;
 		document.querySelector(`calcite-tab-title[name="details"]`)?.removeAttribute('disabled');
 		document.querySelector(`calcite-tab-title[name="details"]`)?.dispatchEvent(new MouseEvent('click'));
+
 		this.propertyList.definitionExpression = `OBJECTID = ${feature.getAttribute('OBJECTID')}`;
 	};
 	viewDefined = (view: MapView) => {
