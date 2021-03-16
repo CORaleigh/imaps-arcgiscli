@@ -38,8 +38,11 @@ export default class Measure extends Widget {
 			mutations.forEach((mutation) => {
 				(mutation.addedNodes[0] as HTMLElement)
 					?.querySelector('calcite-icon')
-					?.setAttribute('part', 'radio-icon');
-				(mutation.addedNodes[0] as HTMLElement)?.setAttribute('part', 'radio-label');
+					?.setAttribute('style', 'margin: 0 0 5px 0;');
+				(mutation.addedNodes[0] as HTMLElement)?.setAttribute(
+					'style',
+					'display: flex;flex-direction: column;font-size: 12px;',
+				);
 			});
 			observer.disconnect();
 		});

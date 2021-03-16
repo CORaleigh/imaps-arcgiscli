@@ -9,7 +9,7 @@ import { renderable, tsx } from '@arcgis/core/widgets/support/widget';
 import Widget from '@arcgis/core/widgets/Widget';
 
 import LocationSearchViewModel from './LocationSearch/LocationSearchViewModel';
-
+import './LocationSearch/styles/LocationSearch.scss';
 export interface LocationSearchProperties extends esri.WidgetProperties {
 	name?: string;
 	view?: esri.MapView | esri.SceneView;
@@ -23,7 +23,8 @@ const CSS = {
 export default class LocationSearch extends Widget {
 	@aliasOf('viewModel.view')
 	view!: esri.MapView | esri.SceneView;
-
+	@aliasOf('viewModel.search')
+	search!: esri.widgetsSearch;
 	@property({
 		type: LocationSearchViewModel,
 	})
@@ -33,8 +34,16 @@ export default class LocationSearch extends Widget {
 	constructor(properties?: LocationSearchProperties) {
 		super(properties);
 	}
-
+	_searchCreate = (): void => {
+		if (this.search) {
+			this.search.container = 'locationSearch';
+		}
+	};
 	render(): tsx.JSX.Element {
-		return <div class={CSS.base}></div>;
+		return (
+			<div class={CSS.base}>
+				<div afterCreate={this._searchCreate} id="locationSearch"></div>
+			</div>
+		);
 	}
 }
