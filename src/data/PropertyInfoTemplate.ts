@@ -6,6 +6,7 @@ import CustomContent from '@arcgis/core/popup/content/CustomContent';
 import Locator from '@arcgis/core/tasks/Locator';
 import * as geodesicUtils from '@arcgis/core/geometry/support/geodesicUtils';
 import Feature from '@arcgis/core/widgets/Feature';
+import FieldInfo from '@arcgis/core/popup/FieldInfo';
 
 const arcadeExpressionInfos = [
 	{
@@ -147,7 +148,7 @@ const serviceChanged = (graphic: __esri.Graphic, view: __esri.MapView | __esri.S
 			return service.group.title === e.detail.requestedAccordionItem.getAttribute('item-title');
 		});
 		const promises: Promise<__esri.FeatureSet>[] = [];
-		console.log(graphic);
+
 		if (serviceGroup) {
 			const layers = view.map.allLayers.filter((layer) => {
 				return serviceGroup.group.layers.includes(layer.title);
@@ -311,12 +312,57 @@ const wellCreator = (e: any, view: __esri.MapView) => {
 // });
 // addressTable.load();
 
-export const createTemplate = (view: __esri.MapView | __esri.SceneView): PopupTemplate => {
+function getFieldInfos(condoTable: FeatureLayer): FieldInfo[] {
+	let fieldConfigs: FieldInfo[] = [];
+	condoTable.fields.forEach((field) => {
+		fieldConfigs.push(
+			new FieldInfo({
+				fieldName: field.name,
+				label: field.alias,
+				visible: ['SITE_ADDRESS', 'OWNER', 'PIN_NUM', 'PIN_EXT', 'REID'].includes(field.name),
+			}),
+		);
+	});
+	const ext = fieldConfigs.find((fc) => {
+		return fc.fieldName === 'PIN_EXT';
+	}) as FieldInfo;
+	const pin = fieldConfigs.find((fc) => {
+		return fc.fieldName === 'PIN_NUM';
+	}) as FieldInfo;
+	const reid = fieldConfigs.find((fc) => {
+		return fc.fieldName === 'REID';
+	}) as FieldInfo;
+	const owner = fieldConfigs.find((fc) => {
+		return fc.fieldName === 'OWNER';
+	}) as FieldInfo;
+	const address = fieldConfigs.find((fc) => {
+		return fc.fieldName === 'SITE_ADDRESS';
+	}) as FieldInfo;
+	fieldConfigs = fieldConfigs.filter((fc) => {
+		return !['SITE_ADDRESS', 'OWNER', 'PIN_NUM', 'PIN_EXT', 'REID'].includes(fc.fieldName);
+	});
+	fieldConfigs.unshift(ext);
+	fieldConfigs.unshift(pin);
+	fieldConfigs.unshift(reid);
+	fieldConfigs.unshift(owner);
+	fieldConfigs.unshift(address);
+	console.log(fieldConfigs);
+	return fieldConfigs;
+}
+export const createTemplate = (view: __esri.MapView | __esri.SceneView, condoTable: FeatureLayer): PopupTemplate => {
 	const propertyLayer = view.map.allLayers.find((layer) => {
 		return layer.title.includes('Property') && layer.type === 'feature';
 	}) as FeatureLayer;
+
 	const popupTemplate = new PopupTemplate({
 		expressionInfos: arcadeExpressionInfos,
+		fieldInfos: getFieldInfos(condoTable).map((field) => {
+			return {
+				fieldName: field.fieldName,
+				label: field.label,
+				visible: ['SITE_ADDRESS', 'OWNER', 'PIN_NUM', 'PIN_EXT', 'REID'].includes(field.fieldName),
+			};
+		}),
 		content: [
 			{
 				type: 'text',

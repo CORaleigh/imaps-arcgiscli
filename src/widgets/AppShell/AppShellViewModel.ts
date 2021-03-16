@@ -49,7 +49,6 @@ export default class AppShellViewModel extends Widget {
 
 		if ((event.target as HTMLElement).classList.contains('active')) {
 			(event.target as HTMLElement).classList.remove('active');
-
 			document.getElementById(action.container)?.closest('calcite-panel')?.setAttribute('dismissed', '');
 		} else {
 			action.widget.container
@@ -63,16 +62,17 @@ export default class AppShellViewModel extends Widget {
 	};
 
 	actionCreated = (element: Element): void => {
-		const observer: MutationObserver = new MutationObserver((mutations) => {
-			mutations.forEach((mutation) => {
-				(mutation.addedNodes[0] as HTMLElement)
-					?.querySelector('calcite-icon')
-					?.setAttribute('part', 'actionicon');
-			});
-			observer.disconnect();
-		});
+		// const observer: MutationObserver = new MutationObserver((mutations) => {
+		// 	mutations.forEach((mutation) => {
+		// 		(mutation.addedNodes[0] as HTMLElement)
+		// 			?.querySelector('calcite-icon')
+		// 			?.setAttribute('part', 'actionicon');
+		// 	});
+		// 	observer.disconnect();
+		// });
 		setTimeout(() => {
-			observer.observe(element.shadowRoot as Node, { childList: true });
+			element.shadowRoot?.querySelector('calcite-icon')?.setAttribute('part', 'actionicon');
+			//observer.observe(element.shadowRoot as Node, { childList: true });
 		}, 1000);
 	};
 

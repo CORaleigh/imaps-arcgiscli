@@ -95,6 +95,8 @@ export default class AppShell extends Widget {
 
 	render(): tsx.JSX.Element {
 		window.onresize = () => {
+			console.log(window.innerWidth);
+
 			if (window.innerWidth >= 1000) {
 				const actionbar = document?.querySelector('calcite-action-bar:first-child');
 				document

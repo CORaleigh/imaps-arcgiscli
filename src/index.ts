@@ -4,7 +4,10 @@ import { map } from './data/app';
 // widget utils
 import { initWidgets, initView } from './widgets';
 import AppShell from './widgets/AppShell';
-
+import '@vaadin/vaadin-button';
+import '@vaadin/vaadin-grid';
+import '@vaadin/vaadin-text-field';
+import '@vaadin/vaadin-grid/vaadin-grid-sort-column';
 /**
  * Initialize application
  */

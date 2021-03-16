@@ -71,6 +71,7 @@ export default class PropertySearchViewModel extends Widget {
 		return new LayerSearchSource({
 			placeholder: placeholder,
 			name: name,
+			maxResults: 10,
 			getSuggestions: (params: any) => {
 				return this.getSuggestions(params, name, table, outFields, orderByFields, searchFields, startsWith);
 			},

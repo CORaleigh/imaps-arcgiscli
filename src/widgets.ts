@@ -28,7 +28,9 @@ export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void
 		const condoTable = view.map.allTables.find((layer) => {
 			return layer.title.includes('Condo');
 		}) as FeatureLayer;
-		condoTable.popupTemplate = createTemplate(view);
+		condoTable.load().then(() => {
+			condoTable.popupTemplate = createTemplate(view, condoTable);
+		});
 		const addressTable = view.map.allTables.find((layer) => {
 			return layer.title.includes('Addresses');
 		}) as FeatureLayer;

@@ -6,11 +6,12 @@ import Accessor from '@arcgis/core/core/Accessor';
 import { property, subclass } from '@arcgis/core/core/accessorSupport/decorators';
 
 import PropertyInfo from '../PropertyInfo';
-import PropertyList from '../PropertyList';
+//import PropertyList from '../PropertyList';
 import PropertySearch from '../PropertySearch';
 import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
 import { whenDefinedOnce } from '@arcgis/core/core/watchUtils';
 import MapView from '@arcgis/core/views/MapView';
+import PropertyTable from '../PropertyTable';
 @subclass('app.widgets.PropertySearch.PropertySearchViewModel')
 export default class PropertySearchViewModel extends Accessor {
 	@property() view!: __esri.MapView | __esri.SceneView;
@@ -19,7 +20,7 @@ export default class PropertySearchViewModel extends Accessor {
 	@property() addressTable!: __esri.FeatureLayer;
 	@property() geometry!: __esri.Geometry;
 	featureWidget!: PropertyInfo;
-	propertyList!: PropertyList;
+	propertyList!: PropertyTable;
 	highlights!: any;
 	layerView!: FeatureLayerView;
 
@@ -73,7 +74,7 @@ export default class PropertySearchViewModel extends Accessor {
 		document.querySelector(`calcite-tab-title[name="details"]`)?.removeAttribute('disabled');
 		document.querySelector(`calcite-tab-title[name="details"]`)?.dispatchEvent(new MouseEvent('click'));
 
-		this.propertyList.definitionExpression = `OBJECTID = ${feature.getAttribute('OBJECTID')}`;
+		//this.propertyList.definitionExpression = `OBJECTID = ${feature.getAttribute('OBJECTID')}`;
 	};
 	viewDefined = (view: MapView) => {
 		const search = new PropertySearch({
@@ -114,10 +115,11 @@ export default class PropertySearchViewModel extends Accessor {
 		this.featureWidget = new PropertyInfo({ container: 'featureDiv' });
 	};
 
-	tableCreated = (): PropertyList => {
-		this.propertyList = new PropertyList({
+	tableCreated = (): PropertyTable => {
+		this.propertyList = new PropertyTable({
 			container: 'table',
 		});
+		this.propertyList.on('feature-selected', this.selectFeature);
 
 		return this.propertyList;
 	};

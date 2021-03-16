@@ -31,3 +31,7 @@ calcite-panel::part(container) {
 #searchDiv {
   min-width: 33px;
 }
+
+@media only screen and (max-width: 500px) {
+.propertypanel-base calcite-tab { height: calc(100% - 191.48px);}
+}

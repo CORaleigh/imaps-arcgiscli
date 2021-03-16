@@ -1,0 +1,19 @@
+.propertylist-base {
+  padding: 0;
+  height: 100%;
+  min-height: calc(100% - 33px - 48px);
+}
+
+#table  {
+  height: calc(100% - 46px);
+}
+
+.table-header {
+  padding: 1em;
+}
+.esri-feature-table__loader {
+  display: none;
+  }
+.esri-feature-table__loader.loading {
+display: block;
+}

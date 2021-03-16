@@ -86,7 +86,7 @@ calcite-panel::part(container):focus {
 
 
 calcite-action.active::part(actionicon) {
-  color:var(--blue);;
+  color:var(--blue);
 }
 
 .dark ::part(content) {
@@ -108,6 +108,11 @@ calcite-action.active::part(actionicon) {
 .dark ::part(indicators)::before {
   opacity: .8;
 }
+
+.dark vaadin-grid{
+  background-color: rgb(36, 36, 36);
+}
+
 
 
 .dark .esri-grid__grid {
