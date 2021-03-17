@@ -49,10 +49,10 @@ export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void
 		});
 		view.on('hold', (event) => {
 			propertyPanel.geometry = event.mapPoint;
-			const action = document.querySelector('.panel:last-child calcite-action-bar calcite-action');
-			if (!action?.classList.contains('active')) {
-				action?.dispatchEvent(new MouseEvent('click'));
-			}
+			// const action = document.querySelector('.panel:last-child calcite-action-bar calcite-action');
+			// if (!action?.classList.contains('active')) {
+			// 	action?.dispatchEvent(new MouseEvent('click'));
+			// }
 		});
 	});
 	document.addEventListener('visibilitychange', function () {

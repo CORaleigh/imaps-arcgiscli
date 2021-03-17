@@ -15,6 +15,7 @@ export default class PropertySearchViewModel extends Accessor {
     layerView: FeatureLayerView;
     constructor(params?: any);
     geometryChanged: (geometry: __esri.Geometry) => void;
+    activateTab: (tab: string) => void;
     selectFeature: (feature: __esri.Graphic) => void;
     viewDefined: (view: MapView) => void;
     searchDivCreated: () => void;

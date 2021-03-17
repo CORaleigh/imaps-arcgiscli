@@ -22,3 +22,11 @@ shell.on('ui-loaded', () => {
 	initView(shell, map);
 	//});
 });
+window.addEventListener(
+	'touchstart',
+	function onFirstTouch() {
+		document.body.classList.add('touch');
+		window.removeEventListener('touchstart', onFirstTouch, false);
+	},
+	false,
+);

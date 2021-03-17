@@ -67,12 +67,47 @@ export default class PropertySearchViewModel extends Accessor {
 			});
 	};
 
+	activateTab = (tab: string) => {
+		const action = document.querySelector('calcite-action[text="Property Search"]');
+		if (!action?.classList.contains('active')) {
+			action?.closest('calcite-action.active')?.classList.remove('active');
+			action?.classList.add('active');
+			const panel = action?.closest('.panel')?.querySelector('calcite-panel[dismissed]');
+			action?.closest('.panel')?.querySelector('calcite-panel:not([dismissed])')?.setAttribute('dismissed', '');
+			panel?.removeAttribute('dismissed');
+		}
+
+		const detailsTitle = document.querySelector(`calcite-tab-title[name="details"]`);
+		const detailsTab = document.getElementById('detailsTab');
+		const listTitle = document.querySelector(`calcite-tab-title[name="list"]`);
+		const listTab = document.getElementById('listTab');
+		if (tab === 'list') {
+			listTab?.setAttribute('active', '');
+			listTitle?.setAttribute('active', '');
+			detailsTab?.removeAttribute('active');
+			detailsTitle?.removeAttribute('active');
+		}
+		if (tab === 'details') {
+			detailsTab?.setAttribute('active', '');
+			detailsTitle?.setAttribute('active', '');
+			listTab?.removeAttribute('active');
+			listTitle?.removeAttribute('active');
+		}
+		const left = detailsTitle?.hasAttribute('active') ? '198px' : '20px';
+		const indicator = detailsTab?.parentElement
+			?.querySelector('calcite-tab-nav')
+			?.shadowRoot?.querySelector('.tab-nav-active-indicator');
+		(indicator as HTMLElement).style.left = left;
+	};
+
 	selectFeature = (feature: __esri.Graphic): void => {
 		console.log(feature);
 		feature.layer = this.condoTable;
 		this.featureWidget.propertyFeature = feature;
 		document.querySelector(`calcite-tab-title[name="details"]`)?.removeAttribute('disabled');
-		document.querySelector(`calcite-tab-title[name="details"]`)?.dispatchEvent(new MouseEvent('click'));
+		this.activateTab('details');
+		//document.querySelector(`calcite-tab-title[name="details"]`)?.dispatchEvent(new MouseEvent('click'));
+		//document.querySelector(`calcite-tab-title[name="details"]`)?.dispatchEvent(new TouchEvent('touchstart'));
 
 		//this.propertyList.definitionExpression = `OBJECTID = ${feature.getAttribute('OBJECTID')}`;
 	};
@@ -91,7 +126,7 @@ export default class PropertySearchViewModel extends Accessor {
 				return feature.getAttribute('OBJECTID');
 			});
 			this.propertyList.definitionExpression = `OBJECTID in (${oids.toString()})`;
-			document.querySelector(`calcite-tab-title[name="list"]`)?.dispatchEvent(new MouseEvent('click'));
+			this.activateTab('list');
 		});
 
 		view.whenLayerView(this.propertyLayer).then((layerView) => {

@@ -101,10 +101,18 @@ export default class AppShellViewModel extends Widget {
 	rightActionsInit() {
 		this.emit('ui-loaded', null);
 		setTimeout(() => {
-			//
-			document
-				.querySelector('.panel:last-child calcite-action-bar calcite-action')
-				?.dispatchEvent(new MouseEvent('click'));
+			debugger;
+			const action = document.querySelector('calcite-action[text="Property Search"]');
+			if (!action?.classList.contains('active')) {
+				action?.closest('calcite-action.active')?.classList.remove('active');
+				action?.classList.add('active');
+				const panel = action?.closest('.panel')?.querySelector('calcite-panel[dismissed]');
+				action
+					?.closest('.panel')
+					?.querySelector('calcite-panel:not([dismissed])')
+					?.setAttribute('dismissed', '');
+				panel?.removeAttribute('dismissed');
+			}
 		}, 1000);
 	}
 
