@@ -123,6 +123,11 @@ calcite-action.active::part(actionicon) {
   padding: 0 7px 10px !important;
 }
 
+.esri-basemap-gallery {
+  height: calc(100% - 52.84px)
+
+}
+
 @media only screen and (max-width: 500px) {
   ::part(content) {
     width: calc(100% - 48px);

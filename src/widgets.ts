@@ -81,7 +81,10 @@ export function initWidgets(shell: AppShell): void {
 	const layerList = new Layers();
 	const print = new Print();
 	const select = new PropertySelect();
-	const bookmarks = new Bookmarks({ editingEnabled: true });
+	bookmarks = new Bookmarks({ editingEnabled: true });
+	bookmarks.viewModel.watch('bookmarks', (bms) => {
+		(bookmarks.viewModel.view.map as any).bookmarks = bms;
+	});
 	const measure = new Measure({});
 	const basemaps = new BasemapGallery({});
 	const location = new LocationSearch({});
@@ -146,7 +149,7 @@ export function initWidgets(shell: AppShell): void {
 	];
 	//return view;
 }
-
+let bookmarks: Bookmarks;
 function checkLocalStorage(view: MapView): void {
 	if (window.localStorage.getItem('imaps')) {
 		const webmap: WebMap = WebMap.fromJSON(JSON.parse(window.localStorage.getItem('imaps') as string));
@@ -159,6 +162,9 @@ function checkLocalStorage(view: MapView): void {
 				layer.opacity = lyr?.opacity;
 			});
 			view.map.basemap = webmap.basemap;
+
+			bookmarks.bookmarks = webmap.bookmarks;
+
 			view.extent = webmap.initialViewProperties.viewpoint.targetGeometry.extent;
 		});
 	}

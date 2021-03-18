@@ -30,6 +30,7 @@ export default class AppShellViewModel extends Widget {
 
 	actionClicked = (event: Event) => {
 		const clicked = (event as MouseEvent).screenX > 0;
+
 		let action = this.rightActions.find((action: Action) => {
 			return action.container === (event.currentTarget as any).value;
 		}) as Action;
@@ -39,20 +40,18 @@ export default class AppShellViewModel extends Widget {
 				return action.container === (event.currentTarget as any).value;
 			}) as Action;
 		}
-
 		if ((event.target as HTMLElement).classList.contains('active')) {
 			if (clicked) {
 				document.getElementById(action.container)?.closest('calcite-panel')?.setAttribute('dismissed', '');
 
-				//(event.target as HTMLElement).classList.remove('active');
+				(event.target as HTMLElement).classList.remove('active');
 			}
 		} else {
 			action.widget.container = action.container;
-			document
-				.getElementById(action.container)
+			(event.target as any)
 				?.closest('.panel')
 				?.querySelectorAll('calcite-panel')
-				.forEach((panel) => {
+				.forEach((panel: any) => {
 					panel.setAttribute('dismissed', '');
 				});
 
@@ -74,6 +73,7 @@ export default class AppShellViewModel extends Widget {
 		// 	});
 		// 	observer.disconnect();
 		// });
+		element.addEventListener('click', this.actionClicked);
 		setTimeout(() => {
 			element.shadowRoot?.querySelector('calcite-icon')?.setAttribute('part', 'actionicon');
 			//observer.observe(element.shadowRoot as Node, { childList: true });
@@ -134,11 +134,11 @@ export default class AppShellViewModel extends Widget {
 				?.querySelector('calcite-action-bar:last-child')
 				?.querySelectorAll('.tool-action')
 				?.forEach((action) => {
-					actionbar?.append(action);
+					actionbar?.appendChild(action);
 				});
 			const panel = document?.querySelector('.panel:first-child');
 			document?.querySelectorAll('calcite-panel.tool-container')?.forEach((container) => {
-				panel?.append(container);
+				panel?.appendChild(container);
 			});
 		} else {
 			const actionbar = document?.querySelector('calcite-action-bar:last-child');
@@ -146,8 +146,7 @@ export default class AppShellViewModel extends Widget {
 				?.querySelector('calcite-action-bar:first-child')
 				?.querySelectorAll('.tool-action')
 				?.forEach((action) => {
-					actionbar?.append(action);
-					action.addEventListener('click', this.actionClicked);
+					actionbar?.appendChild(action);
 				});
 			const panel = document?.querySelector('.panel:last-child');
 			document?.querySelectorAll('calcite-panel.tool-container')?.forEach((container) => {

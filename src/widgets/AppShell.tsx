@@ -93,33 +93,37 @@ export default class AppShell extends Widget {
 	};
 
 	render(): tsx.JSX.Element {
+		let lastWidth: number = window.innerWidth;
 		window.onresize = () => {
-			if (window.innerWidth >= 1000) {
-				const actionbar = document?.querySelector('calcite-action-bar:first-child');
+			if (window.innerWidth >= 1000 && lastWidth < 1000) {
+				const actionbar = document?.querySelector('#leftPanel calcite-action-bar');
 				document
-					?.querySelector('calcite-action-bar:last-child')
+					?.querySelector('#rightPanel calcite-action-bar')
 					?.querySelectorAll('.tool-action')
 					?.forEach((action) => {
 						actionbar?.append(action);
 					});
-				const panel = document?.querySelector('.panel:first-child');
+				const panel = document?.querySelector('#leftPanel');
 				document?.querySelectorAll('calcite-panel.tool-container')?.forEach((container) => {
 					panel?.append(container);
 				});
-			} else {
-				const actionbar = document?.querySelector('calcite-action-bar:last-child');
+			}
+			if (window.innerWidth < 1000 && lastWidth >= 1000) {
+				const actionbar = document?.querySelector('#rightPanel calcite-action-bar');
 				document
-					?.querySelector('calcite-action-bar:first-child')
+					?.querySelector('#leftPanel calcite-action-bar')
 					?.querySelectorAll('.tool-action')
 					?.forEach((action) => {
+						action.classList.remove('active');
 						actionbar?.append(action);
-						action.addEventListener('click', this.viewModel.actionClicked);
 					});
-				const panel = document?.querySelector('.panel:last-child');
+				const panel = document?.querySelector('#rightPanel');
+				document.querySelector('calcite-panel.tool-container:not([dismissed])')?.setAttribute('dismissed', '');
 				document?.querySelectorAll('calcite-panel.tool-container')?.forEach((container) => {
 					panel?.insertBefore(container, panel.querySelector('calcite-action-bar'));
 				});
 			}
+			lastWidth = window.innerWidth;
 		};
 
 		return (
@@ -138,7 +142,6 @@ export default class AppShell extends Widget {
 										key={action.title}
 										afterCreate={this.viewModel.actionCreated}
 										bind={this}
-										onclick={this.viewModel.actionClicked}
 										class="tool-action"
 									></calcite-action>
 								);
@@ -237,7 +240,6 @@ export default class AppShell extends Widget {
 										key={action.title}
 										afterCreate={this.viewModel.actionCreated}
 										bind={this}
-										onclick={this.viewModel.actionClicked}
 									></calcite-action>
 								);
 							})}
