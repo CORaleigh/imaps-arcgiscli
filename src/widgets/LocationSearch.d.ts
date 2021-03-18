@@ -10,8 +10,10 @@ export interface LocationSearchProperties extends esri.WidgetProperties {
 export default class LocationSearch extends Widget {
     view: esri.MapView | esri.SceneView;
     search: esri.widgetsSearch;
+    feature: esri.Feature;
     viewModel: LocationSearchViewModel;
     constructor(properties?: LocationSearchProperties);
     _searchCreate: () => void;
+    _locationCreate: () => void;
     render(): tsx.JSX.Element;
 }

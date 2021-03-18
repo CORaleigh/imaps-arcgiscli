@@ -249,7 +249,16 @@ export default class PropertySearchViewModel extends Widget {
 			);
 		}
 	};
-
+	checkPin = (searchTerm: string): string => {
+		const matches =
+			searchTerm.length === 19 &&
+			searchTerm[4] === '.' &&
+			[searchTerm[7], searchTerm[10], searchTerm[15]].every((p) => p === ' ');
+		if (matches) {
+			searchTerm = searchTerm.substring(0, 4) + searchTerm.substring(8, 10) + searchTerm.substring(11, 15);
+		}
+		return searchTerm;
+	};
 	searchWidgetCreated = () => {
 		this.searchWidget = new Search({
 			container: 'searchWidget',
@@ -297,6 +306,11 @@ export default class PropertySearchViewModel extends Widget {
 					['STREET', 'REA_REID', 'OBJECTID'],
 				),
 			],
+		});
+		this.searchWidget.watch('searchTerm', (searchTerm) => {
+			if (searchTerm != this.checkPin(searchTerm)) {
+				this.searchWidget.searchTerm = this.checkPin(searchTerm);
+			}
 		});
 		this.searchWidget.on('search-complete', this.searchComplete);
 	};

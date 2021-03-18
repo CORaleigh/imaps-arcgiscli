@@ -25,6 +25,8 @@ export default class LocationSearch extends Widget {
 	view!: esri.MapView | esri.SceneView;
 	@aliasOf('viewModel.search')
 	search!: esri.widgetsSearch;
+	@aliasOf('viewModel.feature')
+	feature!: esri.Feature;
 	@property({
 		type: LocationSearchViewModel,
 	})
@@ -39,10 +41,16 @@ export default class LocationSearch extends Widget {
 			this.search.container = 'locationSearch';
 		}
 	};
+	_locationCreate = (): void => {
+		if (this.feature) {
+			this.feature.container = 'locationFeature';
+		}
+	};
 	render(): tsx.JSX.Element {
 		return (
 			<div class={CSS.base}>
 				<div afterCreate={this._searchCreate} id="locationSearch"></div>
+				<div afterCreate={this._locationCreate} id="locationFeature"></div>
 			</div>
 		);
 	}

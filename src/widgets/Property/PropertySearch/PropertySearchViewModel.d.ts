@@ -22,5 +22,6 @@ export default class PropertySearchViewModel extends Widget {
     wildcardSearch: (where: string, condoTable: FeatureLayer) => void;
     getWildcardSearchWhere: (searchFields: string[], term: string) => string;
     searchComplete: (event: esri.SearchSearchCompleteEvent) => void;
+    checkPin: (searchTerm: string) => string;
     searchWidgetCreated: () => void;
 }
