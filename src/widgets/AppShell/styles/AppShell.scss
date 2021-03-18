@@ -64,10 +64,23 @@ calcite-panel.maximized::part(content) {
   max-width: 100%;
 }
 calcite-panel.maximized{
-  position: absolute;
-  width: calc(100% - 48px);
+  position: fixed;
+  left: 0;
   right: 48px;
+  bottom: 0;
+  top: 52.84px;
+  z-index: 100;
+  width: auto;
+  min-width: auto;
 
+}
+
+calcite-panel.maximized calcite-tab-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: calc(100% - 48px);
 }
 
 calcite-action-bar {

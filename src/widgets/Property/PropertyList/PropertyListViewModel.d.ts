@@ -11,5 +11,4 @@ export default class PropertyListViewModel extends Widget {
     getProperty: (oids: number[]) => void;
     getColumns: (layer: FeatureLayer) => FieldColumnConfig[];
     featureTableCreated: () => void;
-    init(view: esri.MapView | esri.SceneView): void;
 }

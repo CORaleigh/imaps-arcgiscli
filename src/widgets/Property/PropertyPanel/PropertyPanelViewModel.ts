@@ -101,9 +101,10 @@ export default class PropertySearchViewModel extends Accessor {
 	};
 
 	selectFeature = (feature: __esri.Graphic): void => {
-		console.log(feature);
 		feature.layer = this.condoTable;
 		this.featureWidget.propertyFeature = feature;
+		const action = document.querySelector('calcite-action[text="Property Search"]');
+		(action as HTMLElement).click();
 		document.querySelector(`calcite-tab-title[name="details"]`)?.removeAttribute('disabled');
 		this.activateTab('details');
 		//document.querySelector(`calcite-tab-title[name="details"]`)?.dispatchEvent(new MouseEvent('click'));
@@ -158,7 +159,4 @@ export default class PropertySearchViewModel extends Accessor {
 
 		return this.propertyList;
 	};
-	init(view: __esri.MapView | __esri.SceneView) {
-		console.log(view.scale);
-	}
 }

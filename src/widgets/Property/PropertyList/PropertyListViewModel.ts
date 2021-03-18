@@ -7,7 +7,6 @@ import FeatureTable from '@arcgis/core/widgets/FeatureTable';
 import FieldColumnConfig from '@arcgis/core/widgets/FeatureTable/FieldColumnConfig';
 import { property, subclass } from '@arcgis/core/core/accessorSupport/decorators';
 
-import { whenDefinedOnce } from '@arcgis/core/core/watchUtils';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 
 @subclass('app.widgets.PropertyList.PropertyListViewModel')
@@ -20,7 +19,6 @@ export default class PropertyListViewModel extends Widget {
 
 	constructor(params?: any) {
 		super(params);
-		whenDefinedOnce(this, 'view', this.init.bind(this));
 	}
 	getProperty = (oids: number[]): void => {
 		const relationship = this.condoTable.relationships.find((r) => {
@@ -103,7 +101,6 @@ export default class PropertyListViewModel extends Widget {
 				featureTable.layer.definitionExpression = this.definitionExpression;
 			});
 			featureTable.on('selection-change', (event: any) => {
-				console.log(event);
 				featureTable.clearSelection();
 				if (event.added.length) {
 					this.emit('feature-selected', event.added[0].feature);
@@ -112,7 +109,4 @@ export default class PropertyListViewModel extends Widget {
 			});
 		});
 	};
-	init(view: esri.MapView | esri.SceneView) {
-		console.log(view.scale);
-	}
 }

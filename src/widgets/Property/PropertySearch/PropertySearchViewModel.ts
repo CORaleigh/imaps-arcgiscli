@@ -6,7 +6,6 @@ import Widget from '@arcgis/core/widgets/Widget';
 
 import { property, subclass } from '@arcgis/core/core/accessorSupport/decorators';
 import LayerSearchSource from '@arcgis/core/widgets/Search/LayerSearchSource';
-import { whenDefinedOnce } from '@arcgis/core/core/watchUtils';
 import * as promiseUtils from '@arcgis/core/core/promiseUtils';
 
 import Search from '@arcgis/core/widgets/Search';
@@ -20,7 +19,6 @@ export default class PropertySearchViewModel extends Widget {
 	searchWidget!: Search;
 	constructor(params?: any) {
 		super(params);
-		whenDefinedOnce(this, 'view', this.init.bind(this));
 	}
 	getSuggestions = (
 		params: any,
@@ -150,14 +148,12 @@ export default class PropertySearchViewModel extends Widget {
 				if (features.length === 1) {
 					const feature = features[0];
 					feature.geometry = properties[0].geometry;
-					console.log(feature.geometry);
 					this.emit('feature-selected', feature);
 				}
 			});
 		});
 	};
 	searchCondos = (where: string, oids: number[]): void => {
-		console.log(where, oids);
 		const params: any = { outFields: ['*'] };
 		if (where != '') {
 			params.where = where;
@@ -176,7 +172,6 @@ export default class PropertySearchViewModel extends Widget {
 				if (result.features.length === 1) {
 					const feature = result.features[0];
 					feature.geometry = properties[0].geometry;
-					console.log(feature.geometry);
 					this.emit('feature-selected', feature);
 				}
 			});
@@ -194,7 +189,6 @@ export default class PropertySearchViewModel extends Widget {
 			oids.push(r.feature.getAttribute('OBJECTID'));
 		});
 		let where = '';
-		console.log(layer);
 
 		if (layer?.layerId === 4) {
 			where = `${source === 'Street Name' ? 'FULL_STREET_NAME' : 'SITE_ADDRESS'} = '${term}'`;
@@ -306,8 +300,4 @@ export default class PropertySearchViewModel extends Widget {
 		});
 		this.searchWidget.on('search-complete', this.searchComplete);
 	};
-
-	init(view: esri.MapView | esri.SceneView) {
-		console.log(view.scale);
-	}
 }

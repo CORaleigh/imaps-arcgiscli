@@ -45,7 +45,6 @@ export default class AppShell extends Widget {
 	}
 	shellPanelCreated = (elm: Element): void => {
 		setTimeout(() => {
-			console.log(elm);
 			elm.shadowRoot?.querySelector('.content')?.setAttribute('part', 'content');
 		}, 100);
 	};
@@ -95,8 +94,6 @@ export default class AppShell extends Widget {
 
 	render(): tsx.JSX.Element {
 		window.onresize = () => {
-			console.log(window.innerWidth);
-
 			if (window.innerWidth >= 1000) {
 				const actionbar = document?.querySelector('calcite-action-bar:first-child');
 				document

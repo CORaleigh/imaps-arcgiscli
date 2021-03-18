@@ -8,10 +8,9 @@ export default class PropertyTableViewModel extends Widget {
     grid: any;
     count: number;
     constructor(params?: any);
-    getProperty: (oids: number[]) => void;
+    getProperty: (oids: number[]) => Promise<esri.Graphic[]>;
     definitionUpdated: (definitionExpression: string) => void;
     featureTableCreated: () => void;
     createColumns: () => void;
     exportTable: () => void;
-    init(view: esri.MapView | esri.SceneView): void;
 }

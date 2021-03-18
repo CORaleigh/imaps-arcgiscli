@@ -23,5 +23,4 @@ export default class PropertySearchViewModel extends Widget {
     getWildcardSearchWhere: (searchFields: string[], term: string) => string;
     searchComplete: (event: esri.SearchSearchCompleteEvent) => void;
     searchWidgetCreated: () => void;
-    init(view: esri.MapView | esri.SceneView): void;
 }

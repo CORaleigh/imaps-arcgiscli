@@ -21,5 +21,4 @@ export default class PropertySearchViewModel extends Accessor {
     searchDivCreated: () => void;
     featureDivCreated: () => void;
     tableCreated: () => PropertyTable;
-    init(view: __esri.MapView | __esri.SceneView): void;
 }

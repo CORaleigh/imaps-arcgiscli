@@ -29,6 +29,7 @@ export default class AppShellViewModel extends Widget {
 	};
 
 	actionClicked = (event: Event) => {
+		const clicked = (event as MouseEvent).screenX > 0;
 		let action = this.rightActions.find((action: Action) => {
 			return action.container === (event.currentTarget as any).value;
 		}) as Action;
@@ -38,25 +39,28 @@ export default class AppShellViewModel extends Widget {
 				return action.container === (event.currentTarget as any).value;
 			}) as Action;
 		}
-		action.widget.container = action.container;
-		document
-			.getElementById(action.container)
-			?.closest('.panel')
-			?.querySelectorAll('calcite-panel')
-			.forEach((panel) => {
-				panel.setAttribute('dismissed', '');
-			});
 
 		if ((event.target as HTMLElement).classList.contains('active')) {
-			(event.target as HTMLElement).classList.remove('active');
-			document.getElementById(action.container)?.closest('calcite-panel')?.setAttribute('dismissed', '');
+			if (clicked) {
+				document.getElementById(action.container)?.closest('calcite-panel')?.setAttribute('dismissed', '');
+
+				//(event.target as HTMLElement).classList.remove('active');
+			}
 		} else {
+			action.widget.container = action.container;
+			document
+				.getElementById(action.container)
+				?.closest('.panel')
+				?.querySelectorAll('calcite-panel')
+				.forEach((panel) => {
+					panel.setAttribute('dismissed', '');
+				});
+
 			action.widget.container
 				.closest('.panel')
 				?.querySelector(`calcite-action.active`)
 				?.classList.remove('active');
 			(event.target as HTMLElement).classList.add('active');
-
 			document.getElementById(action.container)?.closest('calcite-panel')?.removeAttribute('dismissed');
 		}
 	};
@@ -75,11 +79,15 @@ export default class AppShellViewModel extends Widget {
 			//observer.observe(element.shadowRoot as Node, { childList: true });
 		}, 1000);
 	};
-
+	panelDismissed = (event: Event) => {
+		if ((event.target as any).dismissed) {
+			(event.target as HTMLElement)?.parentElement
+				?.querySelector('calcite-action-bar calcite-action.active')
+				?.classList.remove('active');
+		}
+	};
 	actionPanelCreated = (element: Element) => {
-		element.addEventListener('calcitePanelDismissedChange', () => {
-			element.closest('calcite-shell-panel')?.setAttribute('collapsed', '');
-		});
+		element.addEventListener('calcitePanelDismissedChange', this.panelDismissed);
 		const observer: MutationObserver = new MutationObserver((mutations) => {
 			mutations.forEach((mutation) => {
 				(mutation.addedNodes[0] as HTMLElement)
@@ -101,18 +109,21 @@ export default class AppShellViewModel extends Widget {
 	rightActionsInit() {
 		this.emit('ui-loaded', null);
 		setTimeout(() => {
-			debugger;
 			const action = document.querySelector('calcite-action[text="Property Search"]');
-			if (!action?.classList.contains('active')) {
-				action?.closest('calcite-action.active')?.classList.remove('active');
-				action?.classList.add('active');
-				const panel = action?.closest('.panel')?.querySelector('calcite-panel[dismissed]');
-				action
-					?.closest('.panel')
-					?.querySelector('calcite-panel:not([dismissed])')
-					?.setAttribute('dismissed', '');
-				panel?.removeAttribute('dismissed');
-			}
+			(action as HTMLElement).click();
+			//
+			// const action = document.querySelector('calcite-action[text="Property Search"]');
+			// if (!action?.classList.contains('active')) {
+			// 	action?.closest('calcite-action.active')?.classList.remove('active');
+			// 	action?.classList.add('active');
+			// 	const panel = action?.closest('.panel')?.querySelector('calcite-panel[dismissed]');
+			// 	action
+			// 		?.closest('.panel')
+			// 		?.querySelector('calcite-panel:not([dismissed])')
+			// 		?.setAttribute('dismissed', '');
+			// 	panel?.removeAttribute('dismissed');
+
+			// }
 		}, 1000);
 	}
 

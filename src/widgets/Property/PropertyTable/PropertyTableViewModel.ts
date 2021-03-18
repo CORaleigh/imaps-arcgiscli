@@ -4,8 +4,9 @@ import esri = __esri;
 
 import Widget from '@arcgis/core/widgets/Widget';
 import { property, subclass } from '@arcgis/core/core/accessorSupport/decorators';
+import * as promiseUtils from '@arcgis/core/core/promiseUtils';
 
-import { watch, whenDefinedOnce } from '@arcgis/core/core/watchUtils';
+import { watch } from '@arcgis/core/core/watchUtils';
 import ButtonMenu from '@arcgis/core/widgets/FeatureTable/Grid/support/ButtonMenu';
 import { GridColumnElement } from '@vaadin/vaadin-grid';
 @subclass('app.widgets.PropertyTable.PropertyTableViewModel')
@@ -19,39 +20,40 @@ export default class PropertyTableViewModel extends Widget {
 	@property() count = 0;
 	constructor(params?: any) {
 		super(params);
-		whenDefinedOnce(this, 'view', this.init.bind(this));
 		watch(this, 'definitionExpression', this.definitionUpdated.bind(this));
 	}
-	getProperty = (oids: number[]): void => {
-		const relationship = this.condoTable.relationships.find((r) => {
-			return r.name === 'CONDO_PROPERTY';
-		});
-		this.condoTable
-			.queryRelatedFeatures({
-				relationshipId: relationship?.id,
-				objectIds: oids,
-				outFields: ['OBJECTID', 'REID'],
-				returnGeometry: false,
-			})
-			.then((result) => {
-				const oids: number[] = [];
-				for (const key in result) {
-					result[key].features.forEach((feature: esri.Graphic) => {
-						oids.push(feature.getAttribute('OBJECTID'));
-					});
-				}
-				this.propertyLayer
-					.queryFeatures({
-						objectIds: oids,
-						outFields: ['*'],
-						returnGeometry: true,
-						outSpatialReference: { wkid: 102100 },
-					})
-					.then((result) => {
-						this.view.goTo(result.features);
-						//this.emit('properties-selected', result.features);
-					});
+	getProperty = (oids: number[]): Promise<esri.Graphic[]> => {
+		return promiseUtils.create((resolve) => {
+			const relationship = this.condoTable.relationships.find((r) => {
+				return r.name === 'CONDO_PROPERTY';
 			});
+			this.condoTable
+				.queryRelatedFeatures({
+					relationshipId: relationship?.id,
+					objectIds: oids,
+					outFields: ['OBJECTID', 'REID'],
+					returnGeometry: false,
+				})
+				.then((result) => {
+					const oids: number[] = [];
+					for (const key in result) {
+						result[key].features.forEach((feature: esri.Graphic) => {
+							oids.push(feature.getAttribute('OBJECTID'));
+						});
+					}
+					this.propertyLayer
+						.queryFeatures({
+							objectIds: oids,
+							outFields: ['*'],
+							returnGeometry: true,
+							outSpatialReference: { wkid: 102100 },
+						})
+						.then((result) => {
+							this.view.goTo(result.features);
+							resolve(result.features);
+						});
+				});
+		});
 	};
 
 	definitionUpdated = (definitionExpression: string) => {
@@ -110,7 +112,6 @@ export default class PropertyTableViewModel extends Widget {
 											//this.createColumns();
 
 											const column = Array.from(columns)?.find((column: GridColumnElement) => {
-												console.log(column.getAttribute('name'));
 												return column?.getAttribute('name') === fieldInfo.fieldName;
 											}) as GridColumnElement;
 											column.hidden = !event.item.selected;
@@ -135,9 +136,15 @@ export default class PropertyTableViewModel extends Widget {
 
 			this.grid.addEventListener('active-item-changed', (event: any) => {
 				const item = event.detail.value;
-				this.grid.selectedItems = item ? [item] : [];
-				this.emit('feature-selected', item as esri.Graphic);
-				this.getProperty([item.attributes['OBJECTID']]);
+				if (item) {
+					this.grid.selectedItems = item ? [item] : [];
+					this.getProperty([item.attributes['OBJECTID']]).then((properties: __esri.Graphic[]) => {
+						if (properties.length) {
+							(item as esri.Graphic).geometry = properties[0]?.geometry;
+						}
+						this.emit('feature-selected', item as esri.Graphic);
+					});
+				}
 			});
 		});
 	};
@@ -221,7 +228,4 @@ export default class PropertyTableViewModel extends Widget {
 			}
 		});
 	};
-	init(view: esri.MapView | esri.SceneView) {
-		console.log(view.scale);
-	}
 }

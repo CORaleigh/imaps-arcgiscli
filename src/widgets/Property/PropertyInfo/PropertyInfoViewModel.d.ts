@@ -9,5 +9,4 @@ export default class PropertyInfoViewModel extends Accessor {
     getPhotos: (feature: __esri.Graphic) => Promise<any>;
     propertyUpdated: () => void;
     featureWidgetCreated: () => void;
-    init(view: esri.MapView | esri.SceneView): void;
 }

@@ -13,6 +13,7 @@ export default class AppShellViewModel extends Widget {
     viewCreated: () => void;
     actionClicked: (event: Event) => void;
     actionCreated: (element: Element) => void;
+    panelDismissed: (event: Event) => void;
     actionPanelCreated: (element: Element) => void;
     init(view: esri.MapView | esri.SceneView): void;
     rightActionsInit(): void;

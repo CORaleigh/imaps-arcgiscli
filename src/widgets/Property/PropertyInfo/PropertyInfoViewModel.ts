@@ -5,7 +5,7 @@ import esri = __esri;
 import Accessor from '@arcgis/core/core/Accessor';
 import Feature from '@arcgis/core/widgets/Feature';
 import { property, subclass } from '@arcgis/core/core/accessorSupport/decorators';
-import { whenDefinedOnce, watch } from '@arcgis/core/core/watchUtils';
+import { watch } from '@arcgis/core/core/watchUtils';
 import * as promiseUtils from '@arcgis/core/core/promiseUtils';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 
@@ -55,7 +55,6 @@ export default class PropertyInfoViewModel extends Accessor {
 					}
 
 					(media as esri.MediaContent).mediaInfos = mediaInfos;
-					console.log(mediaInfos);
 					resolve();
 				});
 		});
@@ -77,11 +76,5 @@ export default class PropertyInfoViewModel extends Accessor {
 		});
 	};
 
-	featureWidgetCreated = () => {
-		whenDefinedOnce(this, 'view', this.init.bind(this));
-	};
-
-	init(view: esri.MapView | esri.SceneView) {
-		console.log(view.scale);
-	}
+	featureWidgetCreated = () => {};
 }

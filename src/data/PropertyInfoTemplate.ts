@@ -346,7 +346,6 @@ function getFieldInfos(condoTable: FeatureLayer): FieldInfo[] {
 	fieldConfigs.unshift(reid);
 	fieldConfigs.unshift(owner);
 	fieldConfigs.unshift(address);
-	console.log(fieldConfigs);
 	return fieldConfigs;
 }
 export const createTemplate = (view: __esri.MapView | __esri.SceneView, condoTable: FeatureLayer): PopupTemplate => {
