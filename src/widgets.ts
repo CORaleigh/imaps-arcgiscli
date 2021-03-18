@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Widgets
 import Legend from '@arcgis/core/widgets/Legend';
 import Bookmarks from '@arcgis/core/widgets/Bookmarks';
@@ -16,6 +17,7 @@ import LocationSearch from './widgets/LocationSearch';
 import { Action } from './widgets/Action';
 import MapView from '@arcgis/core/views/MapView';
 import WebMap from '@arcgis/core/WebMap';
+import TipManager from './widgets/TipManager';
 
 export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void {
 	let propertyPanel: PropertyPanel;
@@ -77,6 +79,11 @@ export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void
 }
 
 export function initWidgets(shell: AppShell): void {
+	const tipManager = new TipManager({ container: 'tipManager', tips: [], title: '' });
+	shell.on('show-tip', (tips: Tip[]) => {
+		tipManager.tips = tips;
+	});
+
 	const legend = new Legend();
 	const layerList = new Layers();
 	const print = new Print();

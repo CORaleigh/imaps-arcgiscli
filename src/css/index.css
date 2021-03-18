@@ -128,6 +128,17 @@ calcite-action.active::part(actionicon) {
 
 }
 
+calcite-tip-manager {
+  position: absolute;
+  left: 1em;
+  right: 1em;
+  bottom: 0;
+
+  margin: 1em;
+  max-width: 100%;
+  z-index: 1000;
+}  
+
 @media only screen and (max-width: 500px) {
   ::part(content) {
     width: calc(100% - 48px);

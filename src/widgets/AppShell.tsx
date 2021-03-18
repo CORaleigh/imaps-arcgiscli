@@ -37,6 +37,7 @@ export default class AppShell extends Widget {
 	@property({
 		type: AppShellViewModel,
 	})
+	@vmEvent(['show-tip'])
 	@renderable()
 	viewModel: AppShellViewModel = new AppShellViewModel();
 
@@ -90,6 +91,10 @@ export default class AppShell extends Widget {
 
 	headerCreated = (): void => {
 		new HeaderMenu({ view: this.view, container: 'header' });
+	};
+	tipClicked = (action: Action): void => {
+		debugger;
+		this.emit('show-tip', action.tips);
 	};
 
 	render(): tsx.JSX.Element {
@@ -182,6 +187,9 @@ export default class AppShell extends Widget {
 										scale="m"
 										calcite-hydrated=""
 										hidden={!action.tips.length}
+										onclick={() => {
+											this.tipClicked(action);
+										}}
 									></calcite-action>
 									<div id={action.container} key={action.container} class="action-panel"></div>
 								</calcite-panel>
@@ -223,6 +231,9 @@ export default class AppShell extends Widget {
 										appearance="solid"
 										scale="m"
 										calcite-hydrated=""
+										onclick={() => {
+											this.tipClicked(action);
+										}}
 										hidden={!action.tips.length}
 									></calcite-action>
 									<div id={action.container} key={action.container} class="action-panel"></div>
