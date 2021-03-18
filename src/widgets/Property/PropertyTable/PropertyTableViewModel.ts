@@ -62,6 +62,7 @@ export default class PropertyTableViewModel extends Widget {
 
 			this.condoTable.queryFeatures({ where: definitionExpression, outFields: ['*'] }).then((featureSet) => {
 				this.grid.items = featureSet.features;
+				this.grid.scrollToIndex(0);
 				this.count = featureSet.features.length;
 				document.querySelector('.esri-feature-table__loader')?.classList.remove('loading');
 			});

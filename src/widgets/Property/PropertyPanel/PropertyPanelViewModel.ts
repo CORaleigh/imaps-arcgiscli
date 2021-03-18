@@ -60,6 +60,12 @@ export default class PropertySearchViewModel extends Accessor {
 								features[0].geometry = featureSet.features[0].geometry;
 								this.selectFeature(features[0]);
 							}
+							if (features.length > 1) {
+								const action = document.querySelector('calcite-action[text="Property Search"]');
+								(action as HTMLElement).click();
+
+								this.activateTab('list');
+							}
 							this.highlights?.remove();
 							this.highlights = this.layerView.highlight(featureSet.features);
 						});
@@ -103,9 +109,7 @@ export default class PropertySearchViewModel extends Accessor {
 	selectFeature = (feature: __esri.Graphic): void => {
 		feature.layer = this.condoTable;
 		this.featureWidget.propertyFeature = feature;
-		const action = document.querySelector('calcite-action[text="Property Search"]');
-		(action as HTMLElement).click();
-		document.querySelector(`calcite-tab-title[name="details"]`)?.removeAttribute('disabled');
+
 		this.activateTab('details');
 		//document.querySelector(`calcite-tab-title[name="details"]`)?.dispatchEvent(new MouseEvent('click'));
 		//document.querySelector(`calcite-tab-title[name="details"]`)?.dispatchEvent(new TouchEvent('touchstart'));
@@ -127,6 +131,8 @@ export default class PropertySearchViewModel extends Accessor {
 				return feature.getAttribute('OBJECTID');
 			});
 			this.propertyList.definitionExpression = `OBJECTID in (${oids.toString()})`;
+			const action = document.querySelector('calcite-action[text="Property Search"]');
+			(action as HTMLElement).click();
 			this.activateTab('list');
 		});
 
