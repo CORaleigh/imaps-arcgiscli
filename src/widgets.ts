@@ -5,6 +5,10 @@ import Bookmarks from '@arcgis/core/widgets/Bookmarks';
 import BasemapGallery from '@arcgis/core/widgets/BasemapGallery';
 import Print from '@arcgis/core/widgets/Print';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
+import Compass from '@arcgis/core/widgets/Compass';
+
+import Track from '@arcgis/core/widgets/Track';
+import Home from '@arcgis/core/widgets/Home';
 
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 
@@ -25,7 +29,9 @@ export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void
 	let propertyPanel: PropertyPanel;
 	const view: MapView = new MapView({ map: map, container: 'viewDiv' });
 	view.ui.add(new ScaleBar({ view: view }), 'bottom-left');
+	view.ui.add(new Compass({ view: view }), 'top-left');
 
+	view.ui.add(new Track({ view: view }), 'top-left');
 	view.when((view: MapView) => {
 		checkLocalStorage(view);
 		const propertyLayer = view.map.allLayers.find((layer) => {
