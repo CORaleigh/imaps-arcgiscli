@@ -128,8 +128,8 @@ const services: any[] = [
 
 const scrollToService = (e: any) => {
 	const rect = (e.detail.requestedAccordionItem as HTMLElement).getBoundingClientRect();
-	const div = document.querySelector('#featureDiv');
-	requestAnimationFrame(() => {
+	const div = document.querySelector('#featureWidget')?.parentElement;
+	setTimeout(() => {
 		div?.scrollTo({ top: rect.top + div.scrollTop - 155, behavior: 'smooth' });
 	});
 };

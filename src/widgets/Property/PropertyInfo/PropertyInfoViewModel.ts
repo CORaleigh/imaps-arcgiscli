@@ -74,6 +74,19 @@ export default class PropertyInfoViewModel extends Accessor {
 				document.querySelector('.esri-feature')?.parentElement?.scrollTo({ top: 0, behavior: 'smooth' });
 			});
 		});
+		const container = this.featureWidget.container as HTMLElement;
+		container?.addEventListener(
+			'scroll',
+			() => {
+				debugger;
+				if (container.scrollTop >= container?.scrollHeight - container?.offsetHeight - 1) {
+					document.querySelector('#scrollArrow')?.classList.add('hidden');
+				} else {
+					document.querySelector('#scrollArrow')?.classList.remove('hidden');
+				}
+			},
+			{ passive: true },
+		);
 	};
 
 	featureWidgetCreated = () => {};

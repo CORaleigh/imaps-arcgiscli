@@ -73,7 +73,7 @@ calcite-panel.maximized{
   z-index: 100;
   width: auto;
   min-width: auto;
-
+  max-width: 100%;
 }
 
 calcite-panel {
@@ -90,6 +90,10 @@ calcite-panel.maximized calcite-tab-nav {
 
 calcite-action-bar {
   overflow-x: hidden;
+}
+
+calcite-tab-nav {
+  background-color: var(--calcite-ui-foreground-1);
 }
 
 @media only screen and (max-width: 1000px) {
@@ -128,6 +132,7 @@ calcite-tab-nav {
   left: 0;
   right: 0;
   width: calc(100% - 48px);
+  background-color: var(--calcite-ui-foreground-1);
 }
 
 

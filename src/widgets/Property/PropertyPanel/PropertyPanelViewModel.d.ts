@@ -13,8 +13,10 @@ export default class PropertySearchViewModel extends Accessor {
     propertyList: PropertyTable;
     highlights: any;
     layerView: FeatureLayerView;
+    maximized: boolean;
     constructor(params?: any);
     geometryChanged: (geometry: __esri.Geometry) => void;
+    buildTabNav: (tab: string) => void;
     activateTab: (tab: string) => void;
     selectFeature: (feature: __esri.Graphic) => void;
     viewDefined: (view: MapView) => void;

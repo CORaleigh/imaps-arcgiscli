@@ -23,10 +23,13 @@ export default class PropertySearchViewModel extends Accessor {
 	propertyList!: PropertyTable;
 	highlights!: any;
 	layerView!: FeatureLayerView;
-
+	@property() maximized!: boolean;
 	constructor(params?: any) {
 		super(params);
 		this.watch('geometry', this.geometryChanged);
+		this.watch('maximized', () => {
+			this.buildTabNav(document?.querySelector('calcite-tab-title[active]')?.getAttribute('name') as string);
+		});
 	}
 	geometryChanged = (geometry: __esri.Geometry) => {
 		this.propertyLayer
@@ -73,37 +76,48 @@ export default class PropertySearchViewModel extends Accessor {
 			});
 	};
 
+	buildTabNav = (tab: string) => {
+		debugger;
+		const nav = document.querySelector('calcite-tab-nav') as HTMLElement;
+		const parent = nav.parentElement;
+		nav.remove();
+		const newnav = document.createElement('calcite-tab-nav');
+		newnav.setAttribute('slot', 'tab-nav');
+		const tab1 = document.createElement('calcite-tab-title');
+		tab1.setAttribute('name', 'list');
+
+		tab1.textContent = 'List';
+		const tab2 = document.createElement('calcite-tab-title');
+		tab2.setAttribute('name', 'details');
+
+		tab2.textContent = 'Details';
+
+		if (tab === 'list') {
+			tab1.setAttribute('active', '');
+		}
+		if (tab === 'details') {
+			tab2.setAttribute('active', '');
+		}
+
+		newnav?.appendChild(tab1);
+		newnav?.appendChild(tab2);
+		parent?.appendChild(newnav);
+	};
+
 	activateTab = (tab: string) => {
+		console.log(tab);
 		const action = document.querySelector('calcite-action[text="Property Search"]');
+		const panel = action?.closest('.panel')?.querySelector('calcite-panel[dismissed]');
+
 		if (!action?.classList.contains('active')) {
 			action?.closest('calcite-action.active')?.classList.remove('active');
 			action?.classList.add('active');
-			const panel = action?.closest('.panel')?.querySelector('calcite-panel[dismissed]');
 			action?.closest('.panel')?.querySelector('calcite-panel:not([dismissed])')?.setAttribute('dismissed', '');
 			panel?.removeAttribute('dismissed');
 		}
+		document?.querySelector('calcite-tab-title[disabled]')?.removeAttribute('disabled');
 
-		const detailsTitle = document.querySelector(`calcite-tab-title[name="details"]`);
-		const detailsTab = document.getElementById('detailsTab');
-		const listTitle = document.querySelector(`calcite-tab-title[name="list"]`);
-		const listTab = document.getElementById('listTab');
-		if (tab === 'list') {
-			listTab?.setAttribute('active', '');
-			listTitle?.setAttribute('active', '');
-			detailsTab?.removeAttribute('active');
-			detailsTitle?.removeAttribute('active');
-		}
-		if (tab === 'details') {
-			detailsTab?.setAttribute('active', '');
-			detailsTitle?.setAttribute('active', '');
-			listTab?.removeAttribute('active');
-			listTitle?.removeAttribute('active');
-		}
-		const left = detailsTitle?.hasAttribute('active') ? '198px' : '20px';
-		const indicator = detailsTab?.parentElement
-			?.querySelector('calcite-tab-nav')
-			?.shadowRoot?.querySelector('.tab-nav-active-indicator');
-		(indicator as HTMLElement).style.left = left;
+		this.buildTabNav(tab);
 	};
 
 	selectFeature = (feature: __esri.Graphic): void => {
@@ -111,10 +125,6 @@ export default class PropertySearchViewModel extends Accessor {
 		this.featureWidget.propertyFeature = feature;
 
 		this.activateTab('details');
-		//document.querySelector(`calcite-tab-title[name="details"]`)?.dispatchEvent(new MouseEvent('click'));
-		//document.querySelector(`calcite-tab-title[name="details"]`)?.dispatchEvent(new TouchEvent('touchstart'));
-
-		//this.propertyList.definitionExpression = `OBJECTID = ${feature.getAttribute('OBJECTID')}`;
 	};
 	viewDefined = (view: MapView) => {
 		const search = new PropertySearch({

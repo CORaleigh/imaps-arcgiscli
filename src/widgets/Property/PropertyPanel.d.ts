@@ -15,7 +15,9 @@ export default class PropertyPanel extends Widget {
     condoTable: __esri.FeatureLayer;
     addressTable: __esri.FeatureLayer;
     geometry: __esri.Geometry;
+    maximized: boolean;
     viewModel: PropertyPanelViewModel;
     constructor(properties?: PropertyPanelProperties);
+    scrollArrowCreated: (element: Element) => void;
     render(): tsx.JSX.Element;
 }

@@ -35,6 +35,7 @@ export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void
 	view.ui.add(new Track({ view: view }), 'top-left');
 	view.when((view: MapView) => {
 		checkLocalStorage(view);
+
 		const propertyLayer = view.map.allLayers.find((layer) => {
 			return layer.title.includes('Property') && layer.type === 'feature';
 		}) as FeatureLayer;
@@ -124,6 +125,10 @@ export function initWidgets(shell: AppShell): void {
 	// 	addressTable,
 	// });
 	const propertyPanel = new PropertyPanel({});
+	shell.on('panel-maximized', (maximized: boolean) => {
+		propertyPanel.maximized = maximized;
+	});
+
 	let activetool = '';
 	select.on('selection-complete', (graphic: __esri.Graphic) => {
 		propertyPanel.geometry = graphic.geometry;

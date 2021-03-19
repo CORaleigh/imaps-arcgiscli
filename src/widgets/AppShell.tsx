@@ -37,7 +37,7 @@ export default class AppShell extends Widget {
 	@property({
 		type: AppShellViewModel,
 	})
-	@vmEvent(['show-tip'])
+	@vmEvent(['show-tip', 'panel-maximized'])
 	@renderable()
 	viewModel: AppShellViewModel = new AppShellViewModel();
 
@@ -62,18 +62,7 @@ export default class AppShell extends Widget {
 				?.setAttribute('icon', 'right-edge');
 			panel?.classList.add('maximized');
 		}
-		//workaround to handle tab indicator not repositioning after resize of panel
-		document.querySelector('calcite-tab:not([active])')?.classList.add('esri-hidden');
-		document.querySelector('calcite-tab:not([active])')?.toggleAttribute('disabled');
-
-		//document.querySelector('calcite-tab-title:not([active])')?.dispatchEvent(new MouseEvent('click'));
-
-		requestAnimationFrame(() => {
-			document.querySelector('calcite-tab:not([active])')?.toggleAttribute('disabled');
-
-			document.querySelector('calcite-tab-title:not([active])')?.dispatchEvent(new MouseEvent('click'));
-			document.querySelector('calcite-tab.esri-hidden')?.classList.remove('esri-hidden');
-		});
+		this.emit('panel-maximized', panel?.classList.contains('maximized'));
 	};
 	panelCreated = (elm: Element): void => {
 		const observer: MutationObserver = new MutationObserver((mutations) => {

@@ -30,6 +30,8 @@ export default class PropertyPanel extends Widget {
 	addressTable!: __esri.FeatureLayer;
 	@aliasOf('viewModel.geometry')
 	geometry!: __esri.Geometry;
+	@aliasOf('viewModel.maximized')
+	maximized!: boolean;
 	@property({
 		type: PropertyPanelViewModel,
 	})
@@ -39,6 +41,31 @@ export default class PropertyPanel extends Widget {
 	constructor(properties?: PropertyPanelProperties) {
 		super(properties);
 	}
+
+	scrollArrowCreated = (element: Element): void => {
+		const container = this.viewModel.featureWidget.container as HTMLElement;
+		element?.addEventListener(
+			'click',
+			() => {
+				container?.parentElement?.scrollBy({
+					top: container.offsetHeight,
+					behavior: 'smooth',
+				});
+			},
+			{ passive: true },
+		);
+		container?.addEventListener(
+			'scroll',
+			() => {
+				if (container.scrollTop >= container.scrollHeight - container.offsetHeight - 1) {
+					document.querySelector('#scrollArrow')?.classList.add('hidden');
+				} else {
+					document.querySelector('#scrollArrow')?.classList.remove('hidden');
+				}
+			},
+			{ passive: true },
+		);
+	};
 
 	render(): tsx.JSX.Element {
 		return (
@@ -83,20 +110,21 @@ export default class PropertyPanel extends Widget {
 					</calcite-tab>
 					<calcite-tab aria-expanded="false" id="detailsTab" role="tabpanel" calcite-hydrated="">
 						<div id="featureDiv" afterCreate={this.viewModel.featureDivCreated}></div>
-						{/* <div
-								id="scrollArrow"
-								class="home-page__scroll-down-arrow home-page__scroll-down-arrow--black"
-								data-dojo-attach-point="arrowContainer"
-							>
-								<svg viewBox="0 0 32 32" width="32" height="32" class="icon-inline  ">
-									<path
-										id="arrowPath"
-										stroke="black"
-										stroke-opacity="0.5"
-										d="M16.5 27.207l-4.854-4.854.707-.707L16 25.293V5h1v20.293l3.646-3.646.707.707z"
-									></path>
-								</svg>
-							</div> */}
+						<div
+							afterCreate={this.scrollArrowCreated}
+							id="scrollArrow"
+							class="home-page__scroll-down-arrow home-page__scroll-down-arrow--black"
+							data-dojo-attach-point="arrowContainer"
+						>
+							<svg viewBox="0 0 32 32" width="32" height="32" class="icon-inline  ">
+								<path
+									id="arrowPath"
+									stroke="black"
+									stroke-opacity="0.5"
+									d="M16.5 27.207l-4.854-4.854.707-.707L16 25.293V5h1v20.293l3.646-3.646.707.707z"
+								></path>
+							</svg>
+						</div>
 					</calcite-tab>
 				</calcite-tabs>
 			</div>
