@@ -34,19 +34,20 @@ export default class Measure extends Widget {
 	viewModel: MeasureViewModel = new MeasureViewModel();
 
 	radioItemCreated = (element: Element): void => {
-		const observer: MutationObserver = new MutationObserver((mutations) => {
-			mutations.forEach((mutation) => {
-				(mutation.addedNodes[0] as HTMLElement)
-					?.querySelector('calcite-icon')
-					?.setAttribute('style', 'margin: 0 0 5px 0;');
-				(mutation.addedNodes[0] as HTMLElement)?.setAttribute(
-					'style',
-					'display: flex;flex-direction: column;font-size: 12px;',
-				);
-			});
-			observer.disconnect();
-		});
-		observer.observe(element.shadowRoot as Node, { childList: true });
+		console.log(element);
+		// const observer: MutationObserver = new MutationObserver((mutations) => {
+		// 	mutations.forEach((mutation) => {
+		// 		(mutation.addedNodes[0] as HTMLElement)
+		// 			?.querySelector('calcite-icon')
+		// 			?.setAttribute('style', 'margin: 0 0 5px 0;');
+		// 		(mutation.addedNodes[0] as HTMLElement)?.setAttribute(
+		// 			'style',
+		// 			'display: flex;flex-direction: column;font-size: 12px;',
+		// 		);
+		// 	});
+		// 	observer.disconnect();
+		// });
+		// observer.observe(element.shadowRoot as Node, { childList: true });
 	};
 	constructor(properties?: MeasureProperties) {
 		super(properties);
@@ -65,15 +66,7 @@ export default class Measure extends Widget {
 					>
 						Distance
 					</calcite-radio-group-item>
-					<calcite-radio-group-item
-						title="area"
-						value="area"
-						id="areaItem"
-						icon="measure-area"
-						afterCreate={this.radioItemCreated}
-					>
-						Area
-					</calcite-radio-group-item>
+
 					<calcite-radio-group-item
 						title="coordinates"
 						value="coordinates"
@@ -82,6 +75,15 @@ export default class Measure extends Widget {
 						afterCreate={this.radioItemCreated}
 					>
 						Coordinates
+					</calcite-radio-group-item>
+					<calcite-radio-group-item
+						title="area"
+						value="area"
+						id="areaItem"
+						icon="measure-area"
+						afterCreate={this.radioItemCreated}
+					>
+						Area
 					</calcite-radio-group-item>
 					<calcite-radio-group-item
 						title="clear"

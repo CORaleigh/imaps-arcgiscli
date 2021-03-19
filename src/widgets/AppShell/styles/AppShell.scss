@@ -47,6 +47,7 @@ calcite-action-bar {
   user-select: none; /* Non-prefixed version, currently*/
 }
 
+
 ::part(content) {
   width: 350px;
 
@@ -75,6 +76,10 @@ calcite-panel.maximized{
 
 }
 
+calcite-panel {
+  max-width: 350px;
+}
+
 calcite-panel.maximized calcite-tab-nav {
   position: fixed;
   bottom: 0;
@@ -99,6 +104,7 @@ calcite-action-bar {
     display: none !important;
   }
   calcite-panel:not([dismissed]) {
+    max-width: 100%;
     position: fixed;
     left: 0;
     right: 48px;

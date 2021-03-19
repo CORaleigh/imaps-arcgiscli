@@ -1,13 +1,29 @@
 .measure-base {
   padding: 0;
 }
-::part(radio-icon) {
-  margin: 0 0 5px 0;
 
+calcite-radio-group {
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: 0;
+  grid-template-rows: 43px 43px;
+  grid-template-columns: 50%;
+  padding: 0;
 }
 
-::part(radio-label) {
-display: flex;
-flex-direction: column;
-font-size: 12px;
+calcite-radio-group-item {
+border: 1px solid var(--calcite-ui-border-1);
+}
+
+calcite-radio-group-item:nth-child(1) {
+  border-bottom-color: var(--calcite-ui-background);
+  border-right-color: var(--calcite-ui-background);
+}
+
+calcite-radio-group-item:nth-child(2){
+  border-right-color: var(--calcite-ui-background);
+}
+
+calcite-radio-group-item:nth-child(3){
+  border-bottom-color: var(--calcite-ui-background);
 }
