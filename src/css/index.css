@@ -139,6 +139,10 @@ calcite-tip-manager {
   z-index: 1000;
 }  
 
+.esri-search--show-suggestions .esri-search__suggestions-menu, .esri-search--sources .esri-search__sources-menu {
+  max-height: 70vh !important;
+}
+
 @media only screen and (max-width: 500px) {
   ::part(content) {
     width: calc(100% - 48px);

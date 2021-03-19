@@ -37,12 +37,14 @@ export default class PropertySearchViewModel extends Widget {
 				whereArray.push(`${field} LIKE '%${params.suggestTerm.toUpperCase()}%'`);
 			}
 		});
+
 		return layer
 			.queryFeatures({
 				returnDistinctValues: true,
 				outFields: outFields,
 				returnGeometry: false,
 				orderByFields: orderByFields,
+				num: this.searchWidget.activeSource ? 50 : 6,
 				where: whereArray.join(' OR '),
 			})
 			.then((results) => {
@@ -69,7 +71,7 @@ export default class PropertySearchViewModel extends Widget {
 		return new LayerSearchSource({
 			placeholder: placeholder,
 			name: name,
-			maxResults: 10,
+			maxSuggestions: 6,
 			getSuggestions: (params: any) => {
 				return this.getSuggestions(params, name, table, outFields, orderByFields, searchFields, startsWith);
 			},
