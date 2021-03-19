@@ -4,8 +4,10 @@ import Legend from '@arcgis/core/widgets/Legend';
 import Bookmarks from '@arcgis/core/widgets/Bookmarks';
 import BasemapGallery from '@arcgis/core/widgets/BasemapGallery';
 import Print from '@arcgis/core/widgets/Print';
+import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+
 import AppShell from './widgets/AppShell';
 import PropertyPanel from './widgets/Property/PropertyPanel';
 import { createTemplate } from './data/PropertyInfoTemplate';
@@ -22,6 +24,8 @@ import TipManager from './widgets/TipManager';
 export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void {
 	let propertyPanel: PropertyPanel;
 	const view: MapView = new MapView({ map: map, container: 'viewDiv' });
+	view.ui.add(new ScaleBar({ view: view }), 'bottom-left');
+
 	view.when((view: MapView) => {
 		checkLocalStorage(view);
 		const propertyLayer = view.map.allLayers.find((layer) => {
@@ -95,7 +99,6 @@ export function initWidgets(shell: AppShell): void {
 	const measure = new Measure({});
 	const basemaps = new BasemapGallery({});
 	const location = new LocationSearch({});
-	// view.ui.add(legend, 'bottom-left');
 	// view.ui.add(layerList, 'top-right');
 	// const propertyLayer = view.map.allLayers.find((layer) => {
 	// 	return layer.title.includes('Property') && layer.type === 'feature';
