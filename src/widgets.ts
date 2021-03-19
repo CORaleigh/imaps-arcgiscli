@@ -29,6 +29,7 @@ export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void
 	let propertyPanel: PropertyPanel;
 	const view: MapView = new MapView({ map: map, container: 'viewDiv' });
 	view.ui.add(new ScaleBar({ view: view }), 'bottom-left');
+	view.ui.add(new Home({ view: view }), 'top-left');
 	view.ui.add(new Compass({ view: view }), 'top-left');
 
 	view.ui.add(new Track({ view: view }), 'top-left');
