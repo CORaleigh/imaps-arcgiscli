@@ -24,6 +24,7 @@ import { Action } from './widgets/Action';
 import MapView from '@arcgis/core/views/MapView';
 import WebMap from '@arcgis/core/WebMap';
 import TipManager from './widgets/TipManager';
+import Draw from './widgets/Draw';
 
 export function initView(shell: AppShell, map: __esri.Map | __esri.WebMap): void {
 	let propertyPanel: PropertyPanel;
@@ -107,6 +108,7 @@ export function initWidgets(shell: AppShell): void {
 	const measure = new Measure({});
 	const basemaps = new BasemapGallery({});
 	const location = new LocationSearch({});
+	const draw = new Draw({});
 	// view.ui.add(layerList, 'top-right');
 	// const propertyLayer = view.map.allLayers.find((layer) => {
 	// 	return layer.title.includes('Property') && layer.type === 'feature';
@@ -172,6 +174,7 @@ export function initWidgets(shell: AppShell): void {
 	shell.leftActions = [
 		new Action('Select', select, 'selection', 'selectDiv', true, []),
 		new Action('Measure', measure, 'measure', 'measureDiv', true, []),
+		new Action('Sketch', draw, 'pencil', 'sketchDiv', true, []),
 		new Action('Bookmarks', bookmarks, 'bookmark', 'bookmarksDiv', true, []),
 		new Action('Print', print, 'print', 'printDiv', true, []),
 	];
