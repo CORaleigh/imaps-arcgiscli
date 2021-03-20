@@ -7,12 +7,14 @@ export interface PropertySearchProperties extends esri.WidgetProperties {
     propertyLayer?: esri.FeatureLayer;
     condoTable?: esri.FeatureLayer;
     addressTable?: esri.FeatureLayer;
+    where?: string;
 }
 export default class PropertySearch extends Widget {
     view: esri.MapView | esri.SceneView;
     propertyLayer: esri.FeatureLayer;
     condoTable: esri.FeatureLayer;
     addressTable: esri.FeatureLayer;
+    where: string;
     viewModel: PropertySearchViewModel;
     constructor(properties?: PropertySearchProperties);
     render(): tsx.JSX.Element;

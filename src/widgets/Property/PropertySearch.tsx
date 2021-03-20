@@ -13,6 +13,7 @@ export interface PropertySearchProperties extends esri.WidgetProperties {
 	propertyLayer?: esri.FeatureLayer;
 	condoTable?: esri.FeatureLayer;
 	addressTable?: esri.FeatureLayer;
+	where?: string;
 }
 
 const CSS = {
@@ -29,6 +30,8 @@ export default class PropertySearch extends Widget {
 	condoTable!: esri.FeatureLayer;
 	@aliasOf('viewModel.addressTable')
 	addressTable!: esri.FeatureLayer;
+	@aliasOf('viewModel.where')
+	where!: string;
 	@property({
 		type: PropertySearchViewModel,
 	})

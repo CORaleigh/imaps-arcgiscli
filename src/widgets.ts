@@ -128,6 +128,12 @@ export function initWidgets(shell: AppShell): void {
 	shell.on('panel-maximized', (maximized: boolean) => {
 		propertyPanel.maximized = maximized;
 	});
+	const url = new URL(document.URL);
+	const pins = url.searchParams.get('pins');
+
+	if (pins) {
+		propertyPanel.where = `PIN_NUM in ('${decodeURIComponent(pins.split(',').join(`','`))}')`;
+	}
 
 	let activetool = '';
 	select.on('selection-complete', (graphic: __esri.Graphic) => {

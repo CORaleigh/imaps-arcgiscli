@@ -12,6 +12,7 @@ export interface PropertyPanelProperties extends __esri.WidgetProperties {
 	condoTable?: __esri.FeatureLayer;
 	addressTable?: __esri.FeatureLayer;
 	geometry?: __esri.Geometry;
+	where?: string;
 }
 
 const CSS = {
@@ -32,6 +33,8 @@ export default class PropertyPanel extends Widget {
 	geometry!: __esri.Geometry;
 	@aliasOf('viewModel.maximized')
 	maximized!: boolean;
+	@aliasOf('viewModel.where')
+	where!: string;
 	@property({
 		type: PropertyPanelViewModel,
 	})

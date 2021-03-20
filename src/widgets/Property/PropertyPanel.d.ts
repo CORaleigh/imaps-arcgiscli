@@ -8,6 +8,7 @@ export interface PropertyPanelProperties extends __esri.WidgetProperties {
     condoTable?: __esri.FeatureLayer;
     addressTable?: __esri.FeatureLayer;
     geometry?: __esri.Geometry;
+    where?: string;
 }
 export default class PropertyPanel extends Widget {
     view: __esri.MapView | __esri.SceneView;
@@ -16,6 +17,7 @@ export default class PropertyPanel extends Widget {
     addressTable: __esri.FeatureLayer;
     geometry: __esri.Geometry;
     maximized: boolean;
+    where: string;
     viewModel: PropertyPanelViewModel;
     constructor(properties?: PropertyPanelProperties);
     scrollArrowCreated: (element: Element) => void;

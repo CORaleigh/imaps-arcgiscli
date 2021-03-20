@@ -19,6 +19,8 @@ export default class PropertySearchViewModel extends Accessor {
 	@property() condoTable!: __esri.FeatureLayer;
 	@property() addressTable!: __esri.FeatureLayer;
 	@property() geometry!: __esri.Geometry;
+	@property() where!: __esri.Geometry;
+
 	featureWidget!: PropertyInfo;
 	propertyList!: PropertyTable;
 	highlights!: any;
@@ -31,9 +33,29 @@ export default class PropertySearchViewModel extends Accessor {
 			this.buildTabNav(document?.querySelector('calcite-tab-title[active]')?.getAttribute('name') as string);
 		});
 	}
+
+	setSearchParams = (features: __esri.Graphic[]) => {
+		const pins: string[] = features.map((feature: __esri.Graphic) => {
+			return feature.getAttribute('PIN_NUM');
+		});
+		//	const url = new URL(document.URL);
+		const searchParams = new URLSearchParams();
+		if (pins) {
+			searchParams.set('pins', pins.toString());
+
+			window.history.replaceState({}, '', `${location.pathname}?${searchParams.toString()}`);
+			//url.searchParams
+		}
+	};
+
 	geometryChanged = (geometry: __esri.Geometry) => {
 		this.propertyLayer
-			.queryFeatures({ geometry: geometry, outFields: ['OBJECTID'], returnGeometry: true, returnCentroid: true })
+			.queryFeatures({
+				geometry: geometry,
+				outFields: ['OBJECTID', 'PIN_NUM'],
+				returnGeometry: true,
+				returnCentroid: true,
+			})
 			.then((featureSet) => {
 				if (featureSet.features.length) {
 					this.view.goTo({ target: featureSet.features });
@@ -71,6 +93,7 @@ export default class PropertySearchViewModel extends Accessor {
 							}
 							this.highlights?.remove();
 							this.highlights = this.layerView.highlight(featureSet.features);
+							this.setSearchParams(featureSet.features);
 						});
 				}
 			});
@@ -146,6 +169,10 @@ export default class PropertySearchViewModel extends Accessor {
 			this.activateTab('list');
 		});
 
+		whenDefinedOnce(this, 'where', (where: string) => {
+			search.where = where;
+		});
+
 		view.whenLayerView(this.propertyLayer).then((layerView) => {
 			this.layerView = layerView;
 			this.featureWidget.view = view;
@@ -157,6 +184,7 @@ export default class PropertySearchViewModel extends Accessor {
 			search.on('properties-selected', (properties) => {
 				this.highlights?.remove();
 				this.highlights = layerView.highlight(properties);
+				this.setSearchParams(properties);
 			});
 		});
 	};

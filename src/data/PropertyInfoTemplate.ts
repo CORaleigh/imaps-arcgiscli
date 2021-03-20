@@ -377,7 +377,7 @@ export const createTemplate = (view: __esri.MapView | __esri.SceneView, condoTab
 					return propertyLayer
 						?.queryFeatures({
 							where: `REID = '${e.graphic.getAttribute('REID')}'`,
-							outFields: ['OBJECTID'],
+							outFields: ['OBJECTID', 'PIN_NUM'],
 							returnGeometry: true,
 							returnCentroid: true,
 							outSpatialReference: { wkid: 4326 },

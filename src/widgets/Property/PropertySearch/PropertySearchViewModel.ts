@@ -10,15 +10,18 @@ import * as promiseUtils from '@arcgis/core/core/promiseUtils';
 
 import Search from '@arcgis/core/widgets/Search';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import { whenDefinedOnce } from '@arcgis/core/core/watchUtils';
 @subclass('app.widgets.PropertySearch.PropertySearchViewModel')
 export default class PropertySearchViewModel extends Widget {
 	@property() view!: esri.MapView | esri.SceneView;
 	@property() propertyLayer!: esri.FeatureLayer;
 	@property() condoTable!: esri.FeatureLayer;
 	@property() addressTable!: esri.FeatureLayer;
+	@property() where!: string;
 	searchWidget!: Search;
 	constructor(params?: any) {
 		super(params);
+		whenDefinedOnce(this, 'where', this.whereDefined.bind(this));
 	}
 	getSuggestions = (
 		params: any,
@@ -155,6 +158,9 @@ export default class PropertySearchViewModel extends Widget {
 			});
 		});
 	};
+	whereDefined = (where: string) => {
+		this.searchCondos(where, []);
+	};
 	searchCondos = (where: string, oids: number[]): void => {
 		const params: any = { outFields: ['*'] };
 		if (where != '') {
@@ -176,6 +182,7 @@ export default class PropertySearchViewModel extends Widget {
 					feature.geometry = properties[0].geometry;
 					this.emit('feature-selected', feature);
 				}
+				this.emit('properties-selected', properties);
 			});
 		});
 	};

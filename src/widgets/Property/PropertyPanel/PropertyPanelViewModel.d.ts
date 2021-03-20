@@ -9,12 +9,14 @@ export default class PropertySearchViewModel extends Accessor {
     condoTable: __esri.FeatureLayer;
     addressTable: __esri.FeatureLayer;
     geometry: __esri.Geometry;
+    where: __esri.Geometry;
     featureWidget: PropertyInfo;
     propertyList: PropertyTable;
     highlights: any;
     layerView: FeatureLayerView;
     maximized: boolean;
     constructor(params?: any);
+    setSearchParams: (features: __esri.Graphic[]) => void;
     geometryChanged: (geometry: __esri.Geometry) => void;
     buildTabNav: (tab: string) => void;
     activateTab: (tab: string) => void;
