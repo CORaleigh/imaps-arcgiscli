@@ -17,6 +17,8 @@ export default class PropertySearchViewModel extends Accessor {
     maximized: boolean;
     constructor(params?: any);
     setSearchParams: (features: __esri.Graphic[]) => void;
+    highlightProperties: (features: __esri.Graphic[]) => void;
+    highlightSelected: (feature: __esri.Graphic) => void;
     geometryChanged: (geometry: __esri.Geometry) => void;
     buildTabNav: (tab: string) => void;
     activateTab: (tab: string) => void;

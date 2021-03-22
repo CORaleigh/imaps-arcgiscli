@@ -12,6 +12,9 @@ import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
 import { whenDefinedOnce } from '@arcgis/core/core/watchUtils';
 import MapView from '@arcgis/core/views/MapView';
 import PropertyTable from '../PropertyTable';
+import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 @subclass('app.widgets.PropertySearch.PropertySearchViewModel')
 export default class PropertySearchViewModel extends Accessor {
 	@property() view!: __esri.MapView | __esri.SceneView;
@@ -46,6 +49,44 @@ export default class PropertySearchViewModel extends Accessor {
 			window.history.replaceState({}, '', `${location.pathname}?${searchParams.toString()}`);
 			//url.searchParams
 		}
+	};
+
+	highlightProperties = (features: __esri.Graphic[]) => {
+		console.log(features);
+		const selectionLayer = this.view.map.findLayerById('selection-layer') as FeatureLayer;
+		features.forEach((feature) => {
+			feature.setAttribute('selected', 0);
+		});
+		if (features.length === 1) {
+			features[0].setAttribute('selected', 1);
+		}
+		selectionLayer
+			.queryFeatures({ where: '1=1', outFields: ['OBJECTID'], returnGeometry: false })
+			.then((featureSet) => {
+				selectionLayer.applyEdits({ deleteFeatures: featureSet.features }).then(() => {
+					selectionLayer.applyEdits({ addFeatures: features });
+					selectionLayer.refresh();
+				});
+			});
+	};
+
+	highlightSelected = (feature: __esri.Graphic) => {
+		const selectionLayer = this.view.map.findLayerById('selection-layer') as FeatureLayer;
+		selectionLayer.queryFeatures({ where: 'selected = 1' }).then((featureSet) => {
+			featureSet.features.forEach((f) => {
+				f.setAttribute('selected', 0);
+			});
+			selectionLayer.applyEdits({ updateFeatures: featureSet.features }).then(() => {
+				selectionLayer
+					.queryFeatures({ where: `PIN_NUM = '${feature.getAttribute('PIN_NUM')}'` })
+					.then((featureSet) => {
+						featureSet.features.forEach((f) => {
+							f.setAttribute('selected', 1);
+							selectionLayer.applyEdits({ updateFeatures: featureSet.features });
+						});
+					});
+			});
+		});
 	};
 
 	geometryChanged = (geometry: __esri.Geometry) => {
@@ -91,8 +132,7 @@ export default class PropertySearchViewModel extends Accessor {
 
 								this.activateTab('list');
 							}
-							this.highlights?.remove();
-							this.highlights = this.layerView.highlight(featureSet.features);
+							this.highlightProperties(featureSet.features);
 							this.setSearchParams(featureSet.features);
 						});
 				}
@@ -100,7 +140,6 @@ export default class PropertySearchViewModel extends Accessor {
 	};
 
 	buildTabNav = (tab: string) => {
-		debugger;
 		const nav = document.querySelector('calcite-tab-nav') as HTMLElement;
 		const parent = nav.parentElement;
 		nav.remove();
@@ -142,14 +181,61 @@ export default class PropertySearchViewModel extends Accessor {
 
 		this.buildTabNav(tab);
 	};
-
 	selectFeature = (feature: __esri.Graphic): void => {
 		feature.layer = this.condoTable;
 		this.featureWidget.propertyFeature = feature;
-
+		this.highlightSelected(feature);
 		this.activateTab('details');
 	};
 	viewDefined = (view: MapView) => {
+		const selectionLayer: FeatureLayer = new FeatureLayer({
+			source: [],
+			editingEnabled: true,
+			listMode: 'hide',
+			geometryType: 'polygon',
+			id: 'selection-layer',
+			objectIdField: 'OBJECTID',
+			fields: [
+				{ name: 'OBJECTID', type: 'oid' },
+				{ name: 'selected', type: 'small-integer' },
+				{ name: 'PIN_NUM', type: 'string' },
+			],
+			renderer: new UniqueValueRenderer({
+				field: 'selected',
+				defaultSymbol: new SimpleFillSymbol({
+					style: 'none',
+					outline: {
+						color: [255, 255, 0],
+						width: 2,
+					},
+				}),
+				uniqueValueInfos: [
+					{
+						value: 1,
+						symbol: new SimpleFillSymbol({
+							style: 'none',
+							outline: {
+								color: [255, 255, 0],
+								width: 2,
+							},
+						}),
+						label: 'single',
+					},
+					{
+						value: 0,
+						symbol: new SimpleFillSymbol({
+							style: 'none',
+							outline: {
+								color: [0, 206, 209],
+								width: 2,
+							},
+						}),
+						label: 'multiple',
+					},
+				],
+			}),
+		});
+		view.map.add(selectionLayer);
 		const search = new PropertySearch({
 			container: 'searchDiv',
 			view: view,
@@ -182,8 +268,8 @@ export default class PropertySearchViewModel extends Accessor {
 			this.propertyList.condoTable = this.condoTable;
 			this.propertyList.definitionExpression = 'OBJECTID IS NULL';
 			search.on('properties-selected', (properties) => {
-				this.highlights?.remove();
-				this.highlights = layerView.highlight(properties);
+				this.highlightProperties(properties);
+
 				this.setSearchParams(properties);
 			});
 		});
