@@ -11,6 +11,10 @@ export default class Draw extends Widget {
     label: string;
     fill: string;
     outline: string;
+    outlineOpacity: number;
+    fillOpacity: number;
+    outlineWidth: number;
+    geometryType: string;
     viewModel: DrawViewModel;
     constructor(properties?: DrawProperties);
     textAreaCreated: (element: Element) => void;

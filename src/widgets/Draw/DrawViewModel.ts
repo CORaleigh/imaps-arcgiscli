@@ -12,14 +12,17 @@ import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import LabelClass from '@arcgis/core/layers/support/LabelClass';
 import Color from '@arcgis/core/Color';
-
 @subclass('app.widgets.Draw.DrawViewModel')
 export default class DrawViewModel extends Widget {
 	@property() view!: esri.MapView | esri.SceneView;
 	@property() label = '';
-	@property() fill!: string;
-	@property() outline!: string;
-
+	@property() fill = '#FFFFFF';
+	@property() outline = '#FFFFFF';
+	@property() fillOpacity = 0.5;
+	@property() outlineOpacity = 1;
+	@property() outlineWidth = 1;
+	@property() geometryType!: string;
+	sketch!: Sketch;
 	constructor(params?: any) {
 		super(params);
 	}
@@ -28,8 +31,115 @@ export default class DrawViewModel extends Widget {
 		whenDefinedOnce(this, 'view', this.init.bind(this));
 	};
 
+	fillCreated = (picker: Element) => {
+		picker.addEventListener('calciteColorPickerChange', (e: any) => {
+			const points: esri.FeatureLayer = this.view.map.findLayerById('sketch-points') as esri.FeatureLayer;
+			const polygons: esri.FeatureLayer = this.view.map.findLayerById('sketch-polygons') as esri.FeatureLayer;
+			this.fill = e.target.value;
+			const color = Color.fromHex(this.fill);
+			color.a = this.outlineOpacity;
+			const pointRenderer = (points.renderer as esri.SimpleRenderer).clone();
+			(pointRenderer.symbol as esri.SimpleMarkerSymbol).color = color;
+			const polygonRender = (polygons.renderer as esri.SimpleRenderer).clone();
+			(polygonRender.symbol as esri.SimpleFillSymbol).color = color;
+			points.renderer = polygonRender;
+			polygons.renderer = polygonRender;
+		});
+	};
+
+	outlineCreated = (picker: Element) => {
+		picker.addEventListener('calciteColorPickerChange', (e: any) => {
+			const points: esri.FeatureLayer = this.view.map.findLayerById('sketch-points') as esri.FeatureLayer;
+			const lines: esri.FeatureLayer = this.view.map.findLayerById('sketch-lines') as esri.FeatureLayer;
+			const polygons: esri.FeatureLayer = this.view.map.findLayerById('sketch-polygons') as esri.FeatureLayer;
+			this.outline = e.target.value;
+			const color = Color.fromHex(this.outline);
+			color.a = this.outlineOpacity;
+			const pointRenderer = (points.renderer as esri.SimpleRenderer).clone();
+			(pointRenderer.symbol as esri.SimpleMarkerSymbol).outline.color = color;
+			const polygonRender = (polygons.renderer as esri.SimpleRenderer).clone();
+			(polygonRender.symbol as esri.SimpleFillSymbol).outline.color = color;
+			const lineRenderer = (lines.renderer as esri.SimpleRenderer).clone();
+			lineRenderer.symbol.color = color;
+			points.renderer = polygonRender;
+			polygons.renderer = polygonRender;
+			lines.renderer = lineRenderer;
+		});
+	};
+
+	fillOpacityCreated = (slider: Element) => {
+		const points: esri.FeatureLayer = this.view.map.findLayerById('sketch-points') as esri.FeatureLayer;
+		const polygons: esri.FeatureLayer = this.view.map.findLayerById('sketch-polygons') as esri.FeatureLayer;
+
+		slider.addEventListener(
+			'calciteSliderChange',
+			(e: any) => {
+				this.fillOpacity = parseFloat(e.target.value);
+				const pointRenderer = (points.renderer as esri.SimpleRenderer).clone();
+				const polygonRender = (polygons.renderer as esri.SimpleRenderer).clone();
+				pointRenderer.symbol.color.a = this.fillOpacity;
+				polygonRender.symbol.color.a = this.fillOpacity;
+				points.renderer = polygonRender;
+				polygons.renderer = polygonRender;
+			},
+			{ passive: true },
+		);
+	};
+
+	outlineOpacityCreated = (slider: Element) => {
+		const points: esri.FeatureLayer = this.view.map.findLayerById('sketch-points') as esri.FeatureLayer;
+		const lines: esri.FeatureLayer = this.view.map.findLayerById('sketch-lines') as esri.FeatureLayer;
+
+		const polygons: esri.FeatureLayer = this.view.map.findLayerById('sketch-polygons') as esri.FeatureLayer;
+
+		slider.addEventListener(
+			'calciteSliderChange',
+			(e: any) => {
+				this.outlineOpacity = parseFloat(e.target.value);
+				const pointRenderer = (points.renderer as esri.SimpleRenderer).clone();
+				const polygonRender = (polygons.renderer as esri.SimpleRenderer).clone();
+				const lineRenderer = (lines.renderer as esri.SimpleRenderer).clone();
+
+				(pointRenderer.symbol as esri.SimpleMarkerSymbol).outline.color.a = this.outlineOpacity;
+				(polygonRender.symbol as esri.SimpleMarkerSymbol).outline.color.a = this.outlineOpacity;
+				lineRenderer.symbol.color.a = this.outlineOpacity;
+
+				points.renderer = polygonRender;
+				polygons.renderer = polygonRender;
+				lines.renderer = lineRenderer;
+			},
+			{ passive: true },
+		);
+	};
+
+	outlineWidthCreated = (slider: Element) => {
+		const points: esri.FeatureLayer = this.view.map.findLayerById('sketch-points') as esri.FeatureLayer;
+		const lines: esri.FeatureLayer = this.view.map.findLayerById('sketch-lines') as esri.FeatureLayer;
+
+		const polygons: esri.FeatureLayer = this.view.map.findLayerById('sketch-polygons') as esri.FeatureLayer;
+
+		slider.addEventListener(
+			'calciteSliderChange',
+			(e: any) => {
+				this.outlineWidth = parseFloat(e.target.value);
+				const pointRenderer = (points.renderer as esri.SimpleRenderer).clone();
+				const polygonRender = (polygons.renderer as esri.SimpleRenderer).clone();
+				const lineRenderer = (lines.renderer as esri.SimpleRenderer).clone();
+
+				(pointRenderer.symbol as esri.SimpleMarkerSymbol).outline.width = this.outlineWidth;
+				(polygonRender.symbol as esri.SimpleMarkerSymbol).outline.width = this.outlineWidth;
+				(lineRenderer.symbol as esri.SimpleLineSymbol).width = this.outlineWidth;
+
+				points.renderer = polygonRender;
+				polygons.renderer = polygonRender;
+				lines.renderer = lineRenderer;
+			},
+			{ passive: true },
+		);
+	};
+
 	init(view: esri.MapView | esri.SceneView): void {
-		const graphics = new GraphicsLayer({ listMode: 'hide' });
+		const graphics = new GraphicsLayer({ listMode: 'hide', opacity: 0 });
 		const labelClass = new LabelClass({
 			labelExpressionInfo: { expression: '$feature.label' },
 			symbol: {
@@ -48,6 +158,7 @@ export default class DrawViewModel extends Widget {
 			objectIdField: 'OBJECTID',
 			geometryType: 'point',
 			listMode: 'hide',
+			id: 'sketch-points',
 			renderer: { type: 'simple', symbol: { type: 'simple-marker', color: [255, 255, 255, 1] } } as any,
 			labelingInfo: [labelClass],
 		});
@@ -60,6 +171,7 @@ export default class DrawViewModel extends Widget {
 			objectIdField: 'OBJECTID',
 			geometryType: 'polyline',
 			listMode: 'hide',
+			id: 'sketch-lines',
 			labelingInfo: [labelClass],
 		});
 		const polygons = new FeatureLayer({
@@ -71,53 +183,68 @@ export default class DrawViewModel extends Widget {
 			objectIdField: 'OBJECTID',
 			geometryType: 'polygon',
 			listMode: 'hide',
+			id: 'sketch-polygons',
+			renderer: {
+				type: 'simple',
+				symbol: {
+					type: 'simple-fill',
+					color: [255, 255, 255, 1],
+					outline: {
+						type: 'simple-line',
+						color: [255, 255, 255, 1],
+					},
+				},
+			} as any,
+
 			labelingInfo: [labelClass],
 		});
 		this.view.map.addMany([points, lines, polygons, graphics]);
 
-		document.querySelectorAll('calcite-color-picker').forEach((picker) => {
-			picker.addEventListener(
-				'calciteColorChange',
-				(e: any) => {
-					this.set(e.target.name, e.target.value);
-					const color = Color.fromHex(e.target.value);
-					if (e.target.name === 'fill') {
-						((points.renderer as esri.SimpleRenderer).symbol as esri.SimpleMarkerSymbol).color = color;
-						((polygons.renderer as esri.SimpleRenderer).symbol as esri.SimpleFillSymbol).color = color;
-					}
-					if (e.target.name === 'outline') {
-						((points.renderer as esri.SimpleRenderer)
-							.symbol as esri.SimpleMarkerSymbol).outline.color = color;
-						((polygons.renderer as esri.SimpleRenderer)
-							.symbol as esri.SimpleFillSymbol).outline.color = color;
-						((lines.renderer as esri.SimpleRenderer).symbol as esri.SimpleLineSymbol).color = color;
-					}
-				},
-				{ passive: true },
-			);
+		this.sketch = new Sketch({
+			view: view,
+			container: 'sketchWidget',
+			layer: graphics,
+			creationMode: 'single',
+			defaultCreateOptions: { mode: 'hybrid' },
 		});
-
-		const sketch = new Sketch({ view: view, container: 'sketchWidget', layer: graphics });
-		sketch.on('create', (event: __esri.SketchCreateEvent) => {
+		this.sketch.watch('activeTool', (activeTool: string) => {
+			this.geometryType = activeTool;
+			if (['circle', 'rectangle'].includes(this.geometryType)) {
+				this.geometryType = 'polygon';
+			}
+		});
+		this.sketch.on('create', (event: __esri.SketchCreateEvent) => {
 			if (event.state === 'start') {
 				this.view.popup.autoOpenEnabled = false;
 			}
 			if (event.state === 'complete') {
-				if (event.graphic.geometry.type === 'point') {
-					event.graphic.setAttribute('label', this.label);
-					points.applyEdits({ addFeatures: [event.graphic] }).then(() => {
+				const graphic: esri.Graphic = event.graphic;
+
+				const fillColor = Color.fromHex(this.fill);
+				fillColor.a = this.fillOpacity;
+				const outlineColor = Color.fromHex(this.fill);
+				outlineColor.a = this.outlineOpacity;
+				if (graphic.geometry.type === 'point') {
+					(graphic.symbol as esri.SimpleMarkerSymbol).color = fillColor;
+					(graphic.symbol as esri.SimpleMarkerSymbol).outline.color = outlineColor;
+
+					graphic.setAttribute('label', this.label);
+					points.applyEdits({ addFeatures: [graphic] }).then(() => {
 						points.refresh();
 					});
 				}
-				if (event.graphic.geometry.type === 'polyline') {
-					event.graphic.setAttribute('label', this.label);
-					lines.applyEdits({ addFeatures: [event.graphic] }).then(() => {
+				if (graphic.geometry.type === 'polyline') {
+					graphic.setAttribute('label', this.label);
+					(graphic.symbol as esri.SimpleLineSymbol).color = outlineColor;
+					lines.applyEdits({ addFeatures: [graphic] }).then(() => {
 						lines.refresh();
 					});
 				}
-				if (event.graphic.geometry.type === 'polygon') {
-					event.graphic.setAttribute('label', this.label);
-					polygons.applyEdits({ addFeatures: [event.graphic] }).then(() => {
+				if (graphic.geometry.type === 'polygon') {
+					graphic.setAttribute('label', this.label);
+					(graphic.symbol as esri.SimpleFillSymbol).color = fillColor;
+					(graphic.symbol as esri.SimpleFillSymbol).outline.color = outlineColor;
+					polygons.applyEdits({ addFeatures: [graphic] }).then(() => {
 						polygons.refresh();
 					});
 				}
@@ -125,7 +252,7 @@ export default class DrawViewModel extends Widget {
 			}
 		});
 		//@ts-ignore
-		sketch.on('update', (event: __esri.SketchUpdateEvent) => {
+		this.sketch.on('update', (event: __esri.SketchUpdateEvent) => {
 			if (event.state === 'complete') {
 				if (event.graphics[0].geometry.type === 'point') {
 					points.applyEdits({ updateFeatures: event.graphics }).then(() => {
@@ -144,22 +271,24 @@ export default class DrawViewModel extends Widget {
 				}
 			}
 		});
-		sketch.on('delete', (event: __esri.SketchDeleteEvent) => {
-			if (event.graphics[0].geometry.type === 'point') {
-				points.applyEdits({ deleteFeatures: event.graphics }).then(() => {
-					points.refresh();
-				});
-			}
-			if (event.graphics[0].geometry.type === 'polyline') {
-				lines.applyEdits({ deleteFeatures: event.graphics }).then(() => {
-					lines.refresh();
-				});
-			}
-			if (event.graphics[0].geometry.type === 'polygon') {
-				polygons.applyEdits({ deleteFeatures: event.graphics }).then(() => {
-					polygons.refresh();
-				});
-			}
+		this.sketch.on('delete', (event: __esri.SketchDeleteEvent) => {
+			event.graphics.forEach((graphic) => {
+				if (event.graphics[0].geometry.type === 'point') {
+					points.applyEdits({ deleteFeatures: [graphic] }).then(() => {
+						points.refresh();
+					});
+				}
+				if (event.graphics[0].geometry.type === 'polyline') {
+					lines.applyEdits({ deleteFeatures: [graphic] }).then(() => {
+						lines.refresh();
+					});
+				}
+				if (event.graphics[0].geometry.type === 'polygon') {
+					polygons.applyEdits({ deleteFeatures: [graphic] }).then(() => {
+						polygons.refresh();
+					});
+				}
+			});
 		});
 	}
 }
