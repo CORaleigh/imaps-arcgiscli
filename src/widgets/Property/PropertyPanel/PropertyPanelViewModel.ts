@@ -156,6 +156,7 @@ export default class PropertySearchViewModel extends Accessor {
 
 		if (tab === 'list') {
 			tab1.setAttribute('active', '');
+			tab2.setAttribute('disabled', '');
 		}
 		if (tab === 'details') {
 			tab2.setAttribute('active', '');
@@ -177,7 +178,11 @@ export default class PropertySearchViewModel extends Accessor {
 			action?.closest('.panel')?.querySelector('calcite-panel:not([dismissed])')?.setAttribute('dismissed', '');
 			panel?.removeAttribute('dismissed');
 		}
-		document?.querySelector('calcite-tab-title[disabled]')?.removeAttribute('disabled');
+		if (tab === 'details') {
+			document?.querySelector('calcite-tab-title[name="details"]')?.removeAttribute('disabled');
+		} else {
+			document?.querySelector('calcite-tab-title[name="details"]')?.setAttribute('disabled', '');
+		}
 
 		this.buildTabNav(tab);
 	};
