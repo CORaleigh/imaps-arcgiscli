@@ -128,10 +128,6 @@ calcite-action.active::part(actionicon) {
 }
 
 
-*:focus {
-  outline: none;
-}
-
 calcite-tip-manager {
   position: absolute;
   left: 1em;

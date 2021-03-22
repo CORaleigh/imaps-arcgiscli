@@ -14,6 +14,8 @@ export default class Draw extends Widget {
     outlineOpacity: number;
     fillOpacity: number;
     outlineWidth: number;
+    pointFillEnabled: boolean;
+    polygonFillEnabled: boolean;
     geometryType: string;
     viewModel: DrawViewModel;
     constructor(properties?: DrawProperties);

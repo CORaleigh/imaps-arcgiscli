@@ -29,6 +29,7 @@ export default class PropertyInfoViewModel extends Accessor {
 					return content?.type === 'media';
 				},
 			);
+			console.log(media);
 			(media as esri.MediaContent).mediaInfos = [];
 			const mediaInfos: any[] = [];
 			const layer: FeatureLayer = feature.layer as FeatureLayer;
@@ -69,7 +70,7 @@ export default class PropertyInfoViewModel extends Accessor {
 
 		this.getPhotos(this.featureWidget.graphic).then(() => {
 			this.featureWidget.graphic.popupTemplate = (this.featureWidget.graphic.layer as FeatureLayer).popupTemplate;
-			this.featureWidget.renderNow();
+
 			setTimeout(() => {
 				document.querySelector('.esri-feature')?.parentElement?.scrollTo({ top: 0, behavior: 'smooth' });
 			});

@@ -174,7 +174,7 @@ export function initWidgets(shell: AppShell): void {
 	shell.leftActions = [
 		new Action('Select', select, 'selection', 'selectDiv', true, []),
 		new Action('Measure', measure, 'measure', 'measureDiv', true, []),
-		new Action('Sketch', draw, 'pencil', 'sketchDiv', true, []),
+		new Action('Sketch', draw, 'pencil', 'drawDiv', true, []),
 		new Action('Bookmarks', bookmarks, 'bookmark', 'bookmarksDiv', true, []),
 		new Action('Print', print, 'print', 'printDiv', true, []),
 	];

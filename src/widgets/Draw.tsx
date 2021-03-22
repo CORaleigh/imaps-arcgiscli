@@ -41,6 +41,12 @@ export default class Draw extends Widget {
 	@aliasOf('viewModel.outlineWidth')
 	outlineWidth = 1;
 	@renderable()
+	@aliasOf('viewModel.pointFillEnabled')
+	pointFillEnabled = true;
+	@renderable()
+	@aliasOf('viewModel.polygonFillEnabled')
+	polygonFillEnabled = true;
+	@renderable()
 	@aliasOf('viewModel.geometryType')
 	geometryType!: string;
 	@property({
@@ -89,8 +95,8 @@ export default class Draw extends Widget {
 							<calcite-block-section text="Size">
 								<calcite-slider
 									min="0"
-									max="1"
-									value={this.fillOpacity}
+									max="30"
+									value="10"
 									bind={this}
 									step="0.1"
 									label="Size"
@@ -98,7 +104,7 @@ export default class Draw extends Widget {
 									ticks="0"
 									page-step="5"
 									name="fill-opacity"
-									afterCreate={this.viewModel.fillOpacityCreated}
+									afterCreate={this.viewModel.pointSizeCreated}
 									snap=""
 								></calcite-slider>
 							</calcite-block-section>
@@ -118,46 +124,54 @@ export default class Draw extends Widget {
 									<calcite-switch
 										name="setting"
 										value="enabled"
-										switched=""
+										switched={this.pointFillEnabled}
+										bind={this}
 										aria-checked="true"
 										dir="ltr"
 										tabindex="0"
 										scale="m"
 										calcite-hydrated=""
-									>
-										<input type="checkbox" checked="" name="setting" value="enabled" />
-									</calcite-switch>
+										afterCreate={this.viewModel.pointFillEnabledCreated}
+									></calcite-switch>
 								</label>
 							</calcite-label>
-							<calcite-block-section text="Color">
-								<calcite-color-picker
-									dir="ltr"
-									hide-channels=""
-									hide-saved=""
-									scale="m"
-									value={this.fill}
-									appearance="default"
-									name="fill"
-									calcite-hydrated=""
-									afterCreate={this.viewModel.fillCreated}
-								></calcite-color-picker>
-							</calcite-block-section>
-							<calcite-block-section text="Fill transparency">
-								<calcite-slider
-									min="0"
-									max="1"
-									value={this.fillOpacity}
-									bind={this}
-									step="0.1"
-									label="Opacity"
-									label-handles=""
-									ticks="0"
-									page-step="5"
-									name="fill-opacity"
-									afterCreate={this.viewModel.fillOpacityCreated}
-									snap=""
-								></calcite-slider>
-							</calcite-block-section>
+							{this.pointFillEnabled ? (
+								<div>
+									<calcite-block-section key="color" text="Color">
+										<calcite-color-picker
+											dir="ltr"
+											hide-channels=""
+											hide-saved=""
+											scale="m"
+											value={this.fill}
+											appearance="default"
+											name="fill"
+											calcite-hydrated=""
+											id="pointFill"
+											afterCreate={this.viewModel.pointFillCreated}
+										></calcite-color-picker>
+									</calcite-block-section>
+									<calcite-block-section key="transparency" text="Fill transparency">
+										<calcite-slider
+											min="0"
+											max="1"
+											value={this.fillOpacity}
+											bind={this}
+											step="0.1"
+											label="Opacity"
+											label-handles=""
+											ticks="0"
+											page-step="5"
+											name="fill-opacity"
+											id="pointFillOpacity"
+											afterCreate={this.viewModel.pointFillOpacityCreated}
+											snap=""
+										></calcite-slider>
+									</calcite-block-section>{' '}
+								</div>
+							) : (
+								''
+							)}
 						</calcite-block>
 						<calcite-block key="outline" heading="Outline" open collapsible>
 							<calcite-block-section text="Color">
@@ -170,7 +184,7 @@ export default class Draw extends Widget {
 									appearance="default"
 									name="outline"
 									calcite-hydrated=""
-									afterCreate={this.viewModel.outlineCreated}
+									afterCreate={this.viewModel.pointOutlineCreated}
 								></calcite-color-picker>
 							</calcite-block-section>
 							<calcite-block-section text="Outline transparency">
@@ -185,7 +199,7 @@ export default class Draw extends Widget {
 									ticks="0"
 									page-step="5"
 									name="outline-opacity"
-									afterCreate={this.viewModel.outlineOpacityCreated}
+									afterCreate={this.viewModel.pointOutlineOpacityCreated}
 									snap=""
 								></calcite-slider>
 							</calcite-block-section>
@@ -201,7 +215,7 @@ export default class Draw extends Widget {
 									ticks="0"
 									page-step="5"
 									name="width"
-									afterCreate={this.viewModel.outlineWidthCreated}
+									afterCreate={this.viewModel.pointOutlineWidthCreated}
 									snap=""
 								></calcite-slider>
 							</calcite-block-section>
@@ -223,7 +237,7 @@ export default class Draw extends Widget {
 									appearance="default"
 									name="outline"
 									calcite-hydrated=""
-									afterCreate={this.viewModel.outlineCreated}
+									afterCreate={this.viewModel.lineOutlineCreated}
 								></calcite-color-picker>
 							</calcite-block-section>
 
@@ -239,7 +253,7 @@ export default class Draw extends Widget {
 									ticks="0"
 									page-step="5"
 									name="outline-opacity"
-									afterCreate={this.viewModel.outlineOpacityCreated}
+									afterCreate={this.viewModel.lineOutlineOpacityCreated}
 									snap=""
 								></calcite-slider>
 							</calcite-block-section>
@@ -255,7 +269,7 @@ export default class Draw extends Widget {
 									ticks="0"
 									page-step="5"
 									name="width"
-									afterCreate={this.viewModel.outlineWidthCreated}
+									afterCreate={this.viewModel.lineOutlineWidthCreated}
 									snap=""
 								></calcite-slider>
 							</calcite-block-section>
@@ -281,46 +295,52 @@ export default class Draw extends Widget {
 									<calcite-switch
 										name="setting"
 										value="enabled"
-										switched=""
+										switched={this.polygonFillEnabled}
+										bind={this}
 										aria-checked="true"
 										dir="ltr"
 										tabindex="0"
 										scale="m"
 										calcite-hydrated=""
-									>
-										<input type="checkbox" checked="" name="setting" value="enabled" />
-									</calcite-switch>
+										afterCreate={this.viewModel.polygonFillEnabledCreated}
+									></calcite-switch>
 								</label>
 							</calcite-label>
-							<calcite-block-section text="Color">
-								<calcite-color-picker
-									dir="ltr"
-									hide-channels=""
-									hide-saved=""
-									scale="m"
-									value={this.fill}
-									appearance="default"
-									name="fill"
-									calcite-hydrated=""
-									afterCreate={this.viewModel.fillCreated}
-								></calcite-color-picker>
-							</calcite-block-section>
-							<calcite-block-section text="Fill transparency">
-								<calcite-slider
-									min="0"
-									max="1"
-									value={this.fillOpacity}
-									bind={this}
-									step="0.1"
-									label="Opacity"
-									label-handles=""
-									ticks="0"
-									page-step="5"
-									name="fill-opacity"
-									afterCreate={this.viewModel.fillOpacityCreated}
-									snap=""
-								></calcite-slider>
-							</calcite-block-section>
+							{this.polygonFillEnabled ? (
+								<div>
+									<calcite-block-section key="color" text="Color">
+										<calcite-color-picker
+											dir="ltr"
+											hide-channels=""
+											hide-saved=""
+											scale="m"
+											value={this.fill}
+											appearance="default"
+											name="fill"
+											calcite-hydrated=""
+											afterCreate={this.viewModel.polygonFillCreated}
+										></calcite-color-picker>
+									</calcite-block-section>
+									<calcite-block-section key="transparency" text="Fill transparency">
+										<calcite-slider
+											min="0"
+											max="1"
+											value={this.fillOpacity}
+											bind={this}
+											step="0.1"
+											label="Opacity"
+											label-handles=""
+											ticks="0"
+											page-step="5"
+											name="fill-opacity"
+											afterCreate={this.viewModel.polygonFillOpacityCreated}
+											snap=""
+										></calcite-slider>
+									</calcite-block-section>
+								</div>
+							) : (
+								''
+							)}
 						</calcite-block>
 						<calcite-block key="outline" heading="Outline" open collapsible>
 							<calcite-block-section text="Color">
@@ -333,7 +353,7 @@ export default class Draw extends Widget {
 									appearance="default"
 									name="outline"
 									calcite-hydrated=""
-									afterCreate={this.viewModel.outlineCreated}
+									afterCreate={this.viewModel.polygonOutlineCreated}
 								></calcite-color-picker>
 							</calcite-block-section>
 							<calcite-block-section text="Outline transparency">
@@ -348,7 +368,7 @@ export default class Draw extends Widget {
 									ticks="0"
 									page-step="5"
 									name="outline-opacity"
-									afterCreate={this.viewModel.outlineOpacityCreated}
+									afterCreate={this.viewModel.polygonOutlineOpacityCreated}
 									snap=""
 								></calcite-slider>
 							</calcite-block-section>
@@ -364,7 +384,7 @@ export default class Draw extends Widget {
 									ticks="0"
 									page-step="5"
 									name="width"
-									afterCreate={this.viewModel.outlineWidthCreated}
+									afterCreate={this.viewModel.polygonOutlineWidthCreated}
 									snap=""
 								></calcite-slider>
 							</calcite-block-section>
@@ -373,103 +393,6 @@ export default class Draw extends Widget {
 				) : (
 					''
 				)}
-				{/* <calcite-accordion
-					dir="ltr"
-					scale="m"
-					theme="light"
-					appearance="default"
-					icon-position="end"
-					icon-type="chevron"
-					selection-mode="single"
-				>
-					{this.geometryType === 'polygon' || this.geometryType === 'point' ? (
-						<calcite-accordion-item key="fill" item-title="Fill Color">
-							<calcite-color-picker
-								dir="ltr"
-								hide-channels=""
-								hide-saved=""
-								scale="m"
-								value={this.fill}
-								appearance="default"
-								name="fill"
-								calcite-hydrated=""
-								afterCreate={this.viewModel.fillCreated}
-							></calcite-color-picker>
-							<calcite-slider
-								min="0"
-								max="1"
-								value={this.fillOpacity}
-								bind={this}
-								step="0.1"
-								label="Opacity"
-								label-handles=""
-								ticks="0"
-								page-step="5"
-								name="fill-opacity"
-								afterCreate={this.viewModel.fillOpacityCreated}
-								snap=""
-							></calcite-slider>
-						</calcite-accordion-item>
-					) : (
-						''
-					)}
-					{['point', 'polyline', 'polygon'].includes(this.geometryType) ? (
-						<calcite-accordion-item key="outline" item-title="Outline Color">
-							<calcite-color-picker
-								dir="ltr"
-								hide-channels=""
-								hide-saved=""
-								scale="m"
-								value={this.outline}
-								appearance="default"
-								name="outline"
-								calcite-hydrated=""
-								afterCreate={this.viewModel.outlineCreated}
-							></calcite-color-picker>
-							<calcite-slider
-								min="0"
-								max="1"
-								value={this.outlineOpacity}
-								bind={this}
-								step="0.1"
-								label="Opacity"
-								label-handles=""
-								ticks="0"
-								page-step="5"
-								name="outline-opacity"
-								afterCreate={this.viewModel.outlineOpacityCreated}
-								snap=""
-							></calcite-slider>
-						</calcite-accordion-item>
-					) : (
-						''
-					)}
-					{['point', 'polyline', 'polygon'].includes(this.geometryType) ? (
-						<calcite-accordion-item key="width" item-title="Outline Width">
-							<calcite-slider
-								min="0"
-								max="10"
-								value={this.outlineWidth}
-								bind={this}
-								step="0.1"
-								label="Width"
-								label-handles=""
-								ticks="0"
-								page-step="5"
-								name="width"
-								afterCreate={this.viewModel.outlineWidthCreated}
-								snap=""
-							></calcite-slider>
-						</calcite-accordion-item>
-					) : (
-						''
-					)}
-					{this.geometryType === 'point' ? (
-						<calcite-accordion-item key="size" item-title="Marker Size"></calcite-accordion-item>
-					) : (
-						''
-					)}
-				</calcite-accordion> */}
 			</div>
 		);
 	}
